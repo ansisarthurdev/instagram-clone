@@ -50,7 +50,7 @@ const Navbar = () => {
 
         <div className='user-btns'>
             <Link to='/'><Tooltip title='Messages'><Send className='icon' /></Tooltip></Link>
-            <Link to='/' style={{position: 'relative', top: 3}}><Tooltip title='Profile'><Avatar src='https://img.freepik.com/free-vector/businessman-character-avatar-isolated_24877-60111.jpg?w=2000' /></Tooltip></Link>
+            <Link to='/' style={{position: 'relative', top: 3}}><Tooltip title='Profile'><Avatar src='./images/testImage.jpeg' /></Tooltip></Link>
         </div>
     </Wrapper>
   )
