@@ -111,9 +111,17 @@ margin-bottom: 40px;
 
 .insta-image {
     height: 100%;   
+    overflow: hidden;
+
+    :hover {
+        img {
+            transform: scale(1.1);
+        }
+    }
 
     img {
         width: 100%;
+        transition: .3s cubic-bezier(.5,.17,.53,1.14);
     }
 }
 

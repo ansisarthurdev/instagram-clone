@@ -11,6 +11,7 @@ import { HomeOutline } from '@styled-icons/evaicons-outline/HomeOutline'
 import { SearchAlt } from '@styled-icons/boxicons-regular/SearchAlt'
 import { Tv } from '@styled-icons/bootstrap/Tv'
 import { HeartOutline } from '@styled-icons/evaicons-outline/HeartOutline'
+import { ImageAdd } from '@styled-icons/boxicons-regular/ImageAdd'
 
 //components
 import Icon from './Icon'
@@ -31,8 +32,8 @@ const Navbar = () => {
 
             <Icon 
                 Icon={SearchAlt}
-                link='/'
-                name='Search'
+                link='/discover'
+                name='Discover'
             />
 
             <Icon 
@@ -49,8 +50,13 @@ const Navbar = () => {
         </div>
 
         <div className='user-btns'>
-            <Link to='/'><Tooltip title='Messages'><Send className='icon' /></Tooltip></Link>
-            <Link to='/' style={{position: 'relative', top: 3}}><Tooltip title='Profile'><Avatar src='./images/testImage.jpeg' /></Tooltip></Link>
+            <Link to='/messages'><Tooltip title='Messages'><Send className='icon' /></Tooltip></Link>
+            <Icon 
+                Icon={ImageAdd}
+                link='/'
+                name='Upload Image'
+            />
+            <Link to='/profile' style={{position: 'relative', top: 3}}><Tooltip title='Profile'><Avatar src='./images/testImage.jpeg' /></Tooltip></Link>
         </div>
     </Wrapper>
   )
@@ -68,6 +74,11 @@ margin: 0 auto;
 padding: 20px 20px;
 display: flex;
 justify-content: space-between;
+position: sticky;
+top: 0;
+left: 0;
+background: white;
+z-index: 100;
 
 .nav-btns {
     display: flex;

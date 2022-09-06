@@ -1,0 +1,238 @@
+import React, { useState } from 'react'
+import styled from 'styled-components'
+import { Link } from 'react-router-dom'
+
+//components
+import Navbar from '../components/Navbar'
+import Footer from '../components/Footer'
+import StoryProfile from '../components/StoryProfile'
+
+//icons
+import { ArrowIosBack } from '@styled-icons/evaicons-solid/ArrowIosBack'
+import { LogOut } from '@styled-icons/boxicons-regular/LogOut'
+
+const Profile = () => {
+
+  const [logged, setLogged] = useState(false);
+
+  return (
+    <div className='profile'>
+        <Navbar />
+          <Wrapper>
+            <div className='left'>
+              <div className='profile'>
+
+                <div className='profile-top'>
+                  <Link to='/'><ArrowIosBack className='icon' /></Link>
+                  <Avatar src='./images/testImage.jpeg' />
+                </div>
+
+                <div className='profile-bottom'>
+
+                  <div className='profile-stats'>
+                    <div className='stat'>
+                      <h3>518</h3>
+                      <p>posts</p>
+                    </div>
+                    <div className='stat'>
+                      <h3>220k</h3>
+                      <p>followers</p>
+                    </div>
+                    <div className='stat'>
+                      <h3>197</h3>
+                      <p>following</p>
+                    </div>
+                  </div>
+
+                  <div className='profile-action'>
+                    {logged ? <div className='logged-btn btn'><LogOut className='icon' /> Log out</div> : <div className='follow-btn btn'>Follow</div>}
+                  </div>
+
+                  <h3 className='profile-name'>Ansis Artūrs Irbe</h3>
+                  <p className='profile-desc'>Lorem Ipsum is simply dummy text of the printing and typesetting industry.</p>
+                  <p className='profile-web'>https://github.com/ansisarthurdev</p>
+
+                  <div className='stories'>
+                    <StoryProfile 
+                      link='/'
+                      image= './images/testImage.jpeg'
+                      userName= 'Story1'
+                      seen='false'
+                    />
+
+                    <StoryProfile 
+                      link='/'
+                      image= './images/testImage.jpeg'
+                      userName= 'Story2'
+                      seen='true'
+                    />
+
+                    <StoryProfile 
+                      link='/'
+                      image= './images/testImage.jpeg'
+                      userName= 'Story3'
+                      seen='false'
+                    />
+
+                    <StoryProfile 
+                      link='/'
+                      image= './images/testImage.jpeg'
+                      userName= 'ansisarthur'
+                      seen='true'
+                    />
+
+                    <StoryProfile 
+                      link='/'
+                      image= './images/testImage.jpeg'
+                      userName= 'ansisarthur'
+                      seen='true'
+                    />
+
+                    <StoryProfile 
+                      link='/'
+                      image= './images/testImage.jpeg'
+                      userName= 'ansisarthur'
+                      seen='false'
+                    />
+                  </div>
+                </div>
+
+              </div>
+            </div>
+            <div className='right'>
+sdas
+            </div>
+          </Wrapper>
+        <Footer />
+    </div>
+  )
+}
+
+const Wrapper = styled.div`
+max-width: 1200px;
+margin: 0 auto;
+padding: 20px;
+display: flex;
+
+.left {
+  width: 12%;
+  min-width: 170px;
+  margin-right: 4%;
+
+  .profile {
+    display: flex;
+    flex-direction: column;
+  
+    .profile-top {
+      display: flex;
+      align-items: center;
+
+      .icon {
+        width: 24px;
+        height: 24px;
+        transition: .2s linear;
+
+        :hover {
+          opacity: .5;
+        }
+      }
+    }
+
+    .profile-bottom {
+      display: flex;
+      flex-direction: column;
+      margin-top: 40px;
+
+      .profile-stats {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 20px;
+        
+        .stat {
+          text-align: center;
+          
+          h3 {
+            font-size: .9rem;
+          }
+
+          p {
+            font-size: .6rem;
+            color: gray;
+          }
+        }
+      }
+
+      .profile-action {
+        .btn {
+          width: 100%;
+          padding: 8px 5px;
+          font-size: .8rem;
+          color: white;
+          border-radius: 5px;
+          transition: .4s cubic-bezier(0.075, 0.82, 0.165, 1);
+          cursor: pointer;
+          display: flex;
+          justify-content: center;
+          align-items: center;
+          margin-bottom: 40px;  
+
+          :hover {
+            opacity: .8;
+          }
+        }
+
+        .follow-btn {
+          background: #218CEE;
+        }
+
+        .logged-btn {
+          background: #DC3545;
+
+          .icon {
+            width: 16px; 
+            height: 16px;
+            margin-right: 5%;
+          }
+        }
+      }
+
+      .profile-name {
+        font-size: .9rem;
+        margin-bottom: 10px;
+      }
+
+      .profile-desc {
+        font-size: .8rem;
+        margin-bottom: 10px;
+      }
+
+      .profile-web {
+        font-size: .8rem;
+        color: #218CEE;
+        margin-bottom: 30px;
+      }
+
+      .stories {
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: center;
+        align-items: center;
+      }
+
+    }
+  }
+}
+
+.right {
+  width: 84%;
+}
+`
+const Avatar = styled.img`
+width: 60px;
+height: 60px;
+border-radius: 50%;
+margin-left: 20%;
+`
+
+export default Profile
