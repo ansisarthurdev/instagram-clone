@@ -100,7 +100,15 @@ const Profile = () => {
               </div>
             </div>
             <div className='right'>
-sdas
+              <div className='images'>
+                <div className='img' style={{ backgroundImage: `url(${"https://images.unsplash.com/photo-1662436267866-c299b8bdce57?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=774&q=80"})` }}></div>
+                <div className='img' style={{ backgroundImage: `url(${"https://images.unsplash.com/photo-1662436267866-c299b8bdce57?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=774&q=80"})` }}></div>
+                <div className='img' style={{ backgroundImage: `url(${"https://images.unsplash.com/photo-1662436267866-c299b8bdce57?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=774&q=80"})` }}></div>
+                <div className='img' style={{ backgroundImage: `url(${"https://images.unsplash.com/photo-1662436267866-c299b8bdce57?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=774&q=80"})` }}></div>
+                <div className='img' style={{ backgroundImage: `url(${"https://images.unsplash.com/photo-1662436267866-c299b8bdce57?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=774&q=80"})` }}></div>
+                <div className='img' style={{ backgroundImage: `url(${"https://images.unsplash.com/photo-1662436267866-c299b8bdce57?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=774&q=80"})` }}></div>
+                <div className='img' style={{ backgroundImage: `url(${"https://images.unsplash.com/photo-1662436267866-c299b8bdce57?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=774&q=80"})` }}></div>
+              </div>
             </div>
           </Wrapper>
         <Footer />
@@ -111,13 +119,27 @@ sdas
 const Wrapper = styled.div`
 max-width: 1200px;
 margin: 0 auto;
-padding: 20px;
+padding: 20px 0 20px 40px;
 display: flex;
+
+@media(max-width: 760px) {
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+
+@media(max-width: 520px) {
+  padding-left: 10px;
+}
 
 .left {
   width: 12%;
   min-width: 170px;
   margin-right: 4%;
+
+  @media(max-width: 760px) {
+    width: 60%;
+  }
 
   .profile {
     display: flex;
@@ -127,10 +149,19 @@ display: flex;
       display: flex;
       align-items: center;
 
+      @media(max-width: 760px){
+        justify-content: center;
+      }
+
       .icon {
         width: 24px;
         height: 24px;
         transition: .2s linear;
+
+        @media(max-width: 760px){
+          position: relative;
+          right: 80px;
+        }
 
         :hover {
           opacity: .5;
@@ -226,6 +257,43 @@ display: flex;
 
 .right {
   width: 84%;
+
+  @media(max-width: 760px) {
+    width: 100%;
+  }
+
+  .images {
+    width: 100%;
+    display: flex;
+    flex-wrap: wrap;
+
+    @media(max-width: 760px) {
+      margin-top: 50px;
+    }
+
+    .img {
+      width: 30%;
+      height: 280px;
+      background-size: cover;
+      background-position: center;
+      margin: 0 20px 20px 0;
+      transition: .3s cubic-bezier(.5,.17,.53,1.14);
+
+      @media(max-width: 1000px) {
+        width: 45%;
+      }
+
+      @media(max-width: 520px) {
+        width: 100%;
+        margin-right: 10px;
+      }
+
+      :hover {
+        transform: scale(1.1);
+      }
+
+    }
+  }
 }
 `
 const Avatar = styled.img`
@@ -233,6 +301,12 @@ width: 60px;
 height: 60px;
 border-radius: 50%;
 margin-left: 20%;
+
+@media(max-width: 760px){
+  margin-left: 0;
+  position: relative;
+  right: 15px;
+}
 `
 
 export default Profile
