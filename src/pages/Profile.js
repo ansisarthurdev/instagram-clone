@@ -13,7 +13,7 @@ import { LogOut } from '@styled-icons/boxicons-regular/LogOut'
 
 const Profile = () => {
 
-  const [logged, setLogged] = useState(false);
+  const [logged] = useState(false);
 
   return (
     <div className='profile'>

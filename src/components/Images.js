@@ -38,7 +38,7 @@ const Images = () => {
         likes: '100'
     },
     {
-        id: '235234',
+        id: '2331231234',
         image: 'https://images.unsplash.com/photo-1527004013197-933c4bb611b3?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=774&q=80',
         userImage: './images/testImage.jpeg',
         userName: 'ansisarthur',
@@ -46,7 +46,7 @@ const Images = () => {
         likes: '100'
     },
     {
-        id: '235234',
+        id: '231235234',
         image: 'https://images.unsplash.com/photo-1527004013197-933c4bb611b3?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=774&q=80',
         userImage: './images/testImage.jpeg',
         userName: 'ansisarthur',
@@ -82,6 +82,7 @@ const Images = () => {
     <Wrapper>
         {imagesList?.map(img => (
             <Image 
+                key={img?.id}
                 id={img?.id}
                 image={img?.image}
                 userImage={img?.userImage}

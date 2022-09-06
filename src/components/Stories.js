@@ -1,10 +1,13 @@
-import React from 'react'
+import React, { useEffect, useState } from 'react'
 import styled from 'styled-components'
 import { Link } from 'react-router-dom'
 
 import Story from './Story'
 
 import { Plus } from '@styled-icons/boxicons-regular/Plus'
+
+//testing
+
 
 const Stories = () => {
 
@@ -123,6 +126,8 @@ const Stories = () => {
         seen: true
     },]
 
+
+
   return (
     <Wrapper>
         <UserStory>
@@ -139,6 +144,7 @@ const Stories = () => {
             image={story?.image}
             userName={story?.userName}
             seen={story?.seen}
+
             />
         ))}
 
@@ -202,11 +208,38 @@ overflow-y: hidden;
 position: relative;
 
 ::-webkit-scrollbar {
-  display: none;
+  width: 6px;
+  height: 8px;
 }
-
--ms-overflow-style: none;
-scrollbar-width: none; 
+::-webkit-scrollbar-button {
+  width: 0px;
+  height: 0px;
+}
+::-webkit-scrollbar-thumb {
+  background: #000000;
+  border: 0px none #000000;
+  border-radius: 50px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: #1c1c1c;
+}
+::-webkit-scrollbar-thumb:active {
+  background: #424242;
+}
+::-webkit-scrollbar-track {
+  background: #ffffff;
+  border: 0px none #ffffff;
+  border-radius: 0px;
+}
+::-webkit-scrollbar-track:hover {
+  background: #ffffff;
+}
+::-webkit-scrollbar-track:active {
+  background: #ffffff;
+}
+::-webkit-scrollbar-corner {
+  background: transparent;
+}
 `
 
 export default Stories

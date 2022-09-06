@@ -17,6 +17,7 @@ import { ImageAdd } from '@styled-icons/boxicons-regular/ImageAdd'
 import Icon from './Icon'
  
 const Navbar = () => {
+
   return (
     <Wrapper>
         <div className='logo'>
@@ -97,6 +98,13 @@ z-index: 100;
         width: 17px;
         height: 17px;
         margin-right: 25px;
+        transition: .2s ease-out;
+        }
+
+        :hover {
+            .icon {
+                transform: scale(1.2);
+            }
         }
     }
 }

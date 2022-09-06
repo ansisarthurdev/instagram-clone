@@ -13,9 +13,7 @@ const Image = ({ id, image, userImage, userName, postAdded, likes }) => {
   return (
     <Wrapper>
         <Link to={`./posts/${id}`}>
-        <div className='insta-image'>
-            <img src={image} alt={userName} />
-        </div>
+        <div className='insta-image' style={{ backgroundImage: `url(${"https://images.unsplash.com/photo-1662436267866-c299b8bdce57?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=774&q=80"})` }}></div>
         </Link>
         <InstaInfo>
             <div className='left'>
@@ -85,43 +83,27 @@ margin: 5px 0 0 0;
 
 const Wrapper = styled.div`
 width: 32%;
-min-width: 250px;
 height: 100%;
 margin-bottom: 40px;
 
-@media(max-width: 811px){
-    width: 48%;
-    min-width: 320px;
-}
-
-@media(max-width: 697px){
-    width: 47%;
-    min-width: 290px;
-}
-
-@media(max-width: 636px){
-    width: 46;
-    min-width: 270px;
+@media(max-width: 900px){
+    width: 49%;
 }
 
 @media(max-width: 600px){
-    width: 100%;
-    min-width: 250px;
+    width: 99%;
 }
 
 .insta-image {
-    height: 100%;   
-    overflow: hidden;
+    width: 100%;
+    height: 280px;
+    margin-bottom: 10px;
+    background-size: cover;
+    background-position: center;
+    transition: .3s cubic-bezier(.5,.17,.53,1.14);
 
     :hover {
-        img {
-            transform: scale(1.1);
-        }
-    }
-
-    img {
-        width: 100%;
-        transition: .3s cubic-bezier(.5,.17,.53,1.14);
+        transform: scale(1.05)
     }
 }
 
