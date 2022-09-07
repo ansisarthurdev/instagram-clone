@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useState, useRef } from 'react'
 import styled from 'styled-components'
 
 import Tooltip from '@mui/material/Tooltip'
@@ -27,6 +27,19 @@ const Icon = ({ Icon, link, name}) => {
 
   const [openModal, setOpenModal] = useState(false);
   const [postDescription, setPostDescription] = useState();
+  const filePickerRef = useRef(null);
+  const [selectedFile, setSelectedFile] = useState(null);
+
+  const addImageToPost = (e) => {
+    const reader = new FileReader();
+    if(e.target.files[0]){
+      reader.readAsDataURL(e.target.files[0])
+    }
+
+    reader.onload = (readerEvent) => {
+      setSelectedFile(readerEvent.target.result)
+    }
+  }
 
   const onClickEvent = () => {
     if(name === 'Upload Image'){
@@ -53,17 +66,21 @@ const Icon = ({ Icon, link, name}) => {
       <Box sx={style}>
         <CloseOutline onClick={() => setOpenModal(false)} className='closeIcon' style={{width: 20, height: 20, position: 'absolute', right: 20, zIndex: 100, cursor: 'pointer'}} />
 
-        <div className='add-photo' style={{width: 50, margin: '20px auto', padding: 10, border: '2px dotted black', textAlign: 'center'}}>
-          <AddAPhoto  className='add-photo-icon' style={{width: 30, height: 30}}/>
-          <input type='file' />
-        </div>
+        {selectedFile ? (
+          <img src={selectedFile} alt='' style={{width: '100%', height: 200, objectFit: 'contain', cursor: 'pointer', marginBottom: 20}} onClick={() => setSelectedFile(null)}/>
+        ) : (
+          <div className='add-photo' style={{width: 50, margin: '20px auto', padding: 10, border: '2px dotted black', textAlign: 'center', cursor: 'pointer'}} onClick={() => filePickerRef.current.click()}>
+            <AddAPhoto  className='add-photo-icon' style={{width: 30, height: 30}}/>
+            <input type='file' ref={filePickerRef} onChange={addImageToPost} hidden/>
+          </div>
+        )}
 
         <p style={{textAlign: 'center'}}>Add photo</p>
         <div className='post-description' style={{width: '100%'}}>
           <input type='text' placeholder='Description' name={postDescription} onChange={e => setPostDescription(e.target.value)} style={{width: '100%', outline: 'none', border: 'none', margin: '40px 0 10px'}} />
         </div>
         
-        <div className='add-post' style={{background: '#218CEE', width: '50%', margin: '20px auto 0', textAlign: 'center', color: 'white', padding: 10, fontSize: '0.8rem', borderRadius: 5}}>
+        <div className='add-post' style={{background: '#218CEE', width: '50%', margin: '20px auto 0', textAlign: 'center', color: 'white', padding: 10, fontSize: '0.8rem', borderRadius: 5, cursor: 'pointer'}}>
           Add Post
         </div>
       </Box>

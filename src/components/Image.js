@@ -59,13 +59,14 @@ margin: 5px 0 0 0;
 
         :hover {
             opacity: .5;
+            transform: scale(1.2);
         }
     }
 
     .icon {
         width: 15px;
         height: 15px;
-        transition: .2s linear;
+        transition: .2s ease-out;
     }
 
     p {
