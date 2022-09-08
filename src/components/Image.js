@@ -13,7 +13,7 @@ const Image = ({ id, image, userImage, userName, postAdded, likes }) => {
   return (
     <Wrapper>
         <Link to={`./posts/${id}`}>
-        <div className='insta-image' style={{ backgroundImage: `url(${"https://images.unsplash.com/photo-1662436267866-c299b8bdce57?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=774&q=80"})` }}></div>
+        <div className='insta-image' style={{ backgroundImage: `url(${image})` }}></div>
         </Link>
         <InstaInfo>
             <div className='left'>

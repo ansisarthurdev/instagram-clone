@@ -1,7 +1,7 @@
-import React from 'react'
+import React, { useState } from 'react'
 import styled from 'styled-components'
 
-import { Link } from 'react-router-dom'
+import { Link, useLocation } from 'react-router-dom'
 import Tooltip from '@mui/material/Tooltip'
 
 //icons
@@ -18,6 +18,9 @@ import Icon from './Icon'
  
 const Navbar = () => {
 
+    const location = useLocation();
+    const [searchInput, setSearchInput] = useState(null)
+
   return (
     <Wrapper>
         <div className='logo'>
@@ -31,11 +34,20 @@ const Navbar = () => {
                 name='Home'
             />
 
-            <Icon 
-                Icon={SearchAlt}
-                link='/discover'
-                name='Discover'
-            />
+            {location?.pathname !== '/discover' && <>
+                <Icon 
+                    Icon={SearchAlt}
+                    link='/discover'
+                    name='Discover'
+                />
+            </>}
+
+            {location?.pathname === '/discover' && <>
+                <div className='search-input'>
+                    <SearchAlt className='icon' />
+                    <input type='text' name={searchInput} onChange={e => setSearchInput(e.target.value)} placeholder='Search...' />
+                </div>
+            </>}
 
             <Icon 
                 Icon={Tv}
@@ -54,7 +66,7 @@ const Navbar = () => {
             <Link to='/messages'><Tooltip title='Messages'><Send className='icon' /></Tooltip></Link>
             <Icon 
                 Icon={ImageAdd}
-                link='/'
+                link=''
                 name='Upload Image'
             />
             <Link to='/profile' style={{position: 'relative', top: 3}}><Tooltip title='Profile'><Avatar src='./images/testImage.jpeg' /></Tooltip></Link>
@@ -84,6 +96,30 @@ z-index: 100;
 .nav-btns {
     display: flex;
     align-items: center;
+
+    .search-input {
+        position: relative;
+        top: 2px;
+        margin-right: 1.8rem;
+        border-radius: 3px;
+        padding: 0 4px 4px 10px;
+        background: #F3F3F3;
+
+        .icon {
+            width: 17px;
+            height: 17px;
+            position: relative;
+            right: 3px;
+        }
+
+        input {
+            outline: none;
+            border: none;
+            height: 100%;
+            font-size: .8rem;
+            background: #F3F3F3;
+        }
+    }
 }
 
 .user-btns {
@@ -117,6 +153,8 @@ z-index: 100;
         display: flex;
         align-items: center;
         cursor: pointer;
+        position: relative;
+        top: 2px;
 
         .icon {
         width: 18px;

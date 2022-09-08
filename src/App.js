@@ -1,6 +1,9 @@
 import React from 'react'
 import { Routes, Route } from "react-router-dom";
 
+import { Provider } from 'react-redux'
+import { store } from './app/store'
+
 //pages
 import Home from './pages/Home'
 import Profile from './pages/Profile'
@@ -11,6 +14,7 @@ import Discover from './pages/Discover'
 
 const App = () => {
   return (
+    <Provider store={store}>
     <Routes>
       <Route path="/" element={<Home />} />
       <Route path="/profile" element={<Profile />} />
@@ -19,6 +23,7 @@ const App = () => {
       <Route path="/img" element={<Img />} />
       <Route path="/discover" element={<Discover />} />
     </Routes>
+    </Provider>
   )
 }
 

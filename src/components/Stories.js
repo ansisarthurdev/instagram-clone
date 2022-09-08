@@ -1,135 +1,45 @@
 import React, { useEffect, useState } from 'react'
 import styled from 'styled-components'
 import { Link } from 'react-router-dom'
+import axios from 'axios'
+import ReactLoading from 'react-loading';
 
+//components
 import Story from './Story'
 
+//icons
 import { Plus } from '@styled-icons/boxicons-regular/Plus'
 
-//testing
-
+//redux
+import { useSelector, useDispatch } from 'react-redux'
+import { selectStories, updateStories } from '../app/appSlice'
 
 const Stories = () => {
 
-    const storiesList = [{
-        link: '/',
-        image: './images/testImage.jpeg',
-        userName: 'ansisarthur',
-        seen: false
-    },
-    {
-        link: '/',
-        image: './images/testImage.jpeg',
-        userName: 'ansisarthur',
-        seen: false
-    },
-    {
-        link: '/',
-        image: './images/testImage.jpeg',
-        userName: 'ansisarthur',
-        seen: false
-    },
-    {
-        link: '/',
-        image: './images/testImage.jpeg',
-        userName: 'ansisarthur',
-        seen: false
-    },
-    {
-        link: '/',
-        image: './images/testImage.jpeg',
-        userName: 'ansisarthur',
-        seen: false
-    },
-    {
-        link: '/',
-        image: './images/testImage.jpeg',
-        userName: 'ansisarthur',
-        seen: true
-    },
-    {
-        link: '/',
-        image: './images/testImage.jpeg',
-        userName: 'ansisarthur',
-        seen: true
-    },
-    {
-        link: '/',
-        image: './images/testImage.jpeg',
-        userName: 'ansisarthur',
-        seen: true
-    },
-    {
-        link: '/',
-        image: './images/testImage.jpeg',
-        userName: 'ansisarthur',
-        seen: true
-    },
-    {
-        link: '/',
-        image: './images/testImage.jpeg',
-        userName: 'ansisarthur',
-        seen: true
-    },
-    {
-        link: '/',
-        image: './images/testImage.jpeg',
-        userName: 'ansisarthur',
-        seen: true
-    },
-    {
-        link: '/',
-        image: './images/testImage.jpeg',
-        userName: 'ansisarthur',
-        seen: true
-    },
-    {
-        link: '/',
-        image: './images/testImage.jpeg',
-        userName: 'ansisarthur',
-        seen: true
-    },
-    {
-        link: '/',
-        image: './images/testImage.jpeg',
-        userName: 'ansisarthur',
-        seen: true
-    },
-    {
-        link: '/',
-        image: './images/testImage.jpeg',
-        userName: 'ansisarthur',
-        seen: true
-    },
-    {
-        link: '/',
-        image: './images/testImage.jpeg',
-        userName: 'ansisarthur',
-        seen: true
-    },
-    {
-        link: '/',
-        image: './images/testImage.jpeg',
-        userName: 'ansisarthur',
-        seen: true
-    },
-    {
-        link: '/',
-        image: './images/testImage.jpeg',
-        userName: 'ansisarthur',
-        seen: true
-    },
-    {
-        link: '/',
-        image: './images/testImage.jpeg',
-        userName: 'ansisarthur',
-        seen: true
-    },]
+    const [newStories, updateNewStories] = useState(null);
+    
+    //redux
+    const dispatch = useDispatch();
+    const storageStories = useSelector(selectStories);
 
+    const getData = () => {
+        axios.get('https://randomuser.me/api/?results=15')
+        .then(response => updateNewStories(response?.data?.results))
+    }
 
+    useEffect(() => {
+      !storageStories ? getData() : updateNewStories(storageStories)
+      //eslint-disable-next-line
+    }, [])
+
+    useEffect(() => {
+      newStories && dispatch(updateStories(newStories))
+      //eslint-disable-next-line
+    }, [newStories])
 
   return (
-    <Wrapper>
+    <Wrapper style={{justifyContent: newStories ? 'flex-start' : 'center'}}>
+        {newStories ? <>
         <UserStory>
             <Link to='/'>
                 <img src='../images/testImage.jpeg' alt='profile' />
@@ -138,15 +48,18 @@ const Stories = () => {
             </Link>
         </UserStory>
 
-        {storiesList.map(story => (
+        {newStories?.map(story => (
             <Story 
-            link={story?.link}
-            image={story?.image}
-            userName={story?.userName}
-            seen={story?.seen}
-
+            key={story?.login?.uuid}
+            link={story?.login?.uuid}
+            image={story?.picture?.thumbnail}
+            userName={story?.login?.username}
+            seen={false}
             />
         ))}
+        </> : (
+            <ReactLoading className='loading-bubbles' type='bubbles' color='black' width={'50px'} />
+        )}
 
     </Wrapper>
   )
