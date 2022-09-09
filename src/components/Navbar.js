@@ -20,7 +20,7 @@ import Icon from './Icon'
 const Navbar = () => {
 
     const location = useLocation();
-    const [searchInput, setSearchInput] = useState(null);
+    const [searchInput, setSearchInput] = useState('');
     const [isOpen, setOpen] = useState(false);
 
   return (
@@ -82,7 +82,7 @@ const Navbar = () => {
             <MobileNav>
             <div className='search-input'>
                 <SearchAlt className='icon' />
-                <input type='text' name={searchInput} onChange={e => setSearchInput(e.target.value)} placeholder='Search...' />
+                <input type='text' value={searchInput} onChange={e => setSearchInput(e.target.value)} placeholder='Search...' />
             </div>  
 
             <div className='mobile-links'>
