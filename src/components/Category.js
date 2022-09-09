@@ -40,6 +40,11 @@ cursor: pointer;
     background-size: cover;
     transition: blur .5s ease-out;
     border-radius: 5px;
+
+    @media(max-width: 685px){
+        height: 48px;
+        width: 70px;
+    }
 }
 
 .category-name {
@@ -47,6 +52,10 @@ cursor: pointer;
     text-align: center;
     margin: 5px 0 15px;
     transition: .2s ease-out;
+
+    @media(max-width: 685px){
+        margin: 5px 0 -5px;
+    }
 }
 
 .category-more {

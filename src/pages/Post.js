@@ -5,9 +5,9 @@ import styled from 'styled-components'
 import Navbar from '../components/Navbar'
 import Footer from '../components/Footer'
 
-const Messages = () => {
+const Post = () => {
   return (
-    <div className='messages'>
+    <div className='post'>
         <Navbar />
           <Wrapper>
             there goes content
@@ -20,7 +20,7 @@ const Messages = () => {
 const Wrapper = styled.div`
 max-width: 1200px;
 margin: 0 auto;
-padding: 20px 20px;
+padding: 20px 0;
 `
 
-export default Messages
+export default Post

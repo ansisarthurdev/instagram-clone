@@ -301,6 +301,11 @@ width: 60px;
 height: 60px;
 border-radius: 50%;
 margin-left: 20%;
+transition: .2s ease-out;
+
+:hover {
+  transform: scale(1.2)
+}
 
 @media(max-width: 760px){
   margin-left: 0;

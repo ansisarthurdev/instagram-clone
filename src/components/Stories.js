@@ -57,13 +57,13 @@ const Stories = () => {
             seen={false}
             />
         ))}
+        
         </> : (
             <ReactLoading className='loading-bubbles' type='bubbles' color='black' width={'50px'} />
         )}
-
     </Wrapper>
   )
-}
+} 
 
 const UserStory = styled.div`
 margin: 0 35px 0 0;

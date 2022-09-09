@@ -93,6 +93,10 @@ const Icon = ({ Icon, link, name}) => {
 
 const Wrapper = styled.div`
 
+@media(max-width: 685px){
+  display: none;
+}
+
 a {
     color: black;
     cursor: pointer;

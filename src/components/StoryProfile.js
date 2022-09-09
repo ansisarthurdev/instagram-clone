@@ -37,11 +37,18 @@ a {
     flex-direction: column;
     align-items: center;
 
+    :hover {
+        img {
+            transform: scale(1.2);
+        }
+    }
+
     img {
         width: 40px;
         height: 40px;
         border-radius: 50%;
         border: 2px solid white;
+        transition: .2s ease-out;
     }
 
     p {

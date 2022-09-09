@@ -62,6 +62,7 @@ const Discover = () => {
             <Categories>
               {categories?.map(category => (
                 <Category 
+                  key={category?.name}
                   name={category?.name}
                   image={category?.image}
                 />
@@ -185,6 +186,25 @@ margin-top: 40px;
         }
       }
 
+      @media(max-width: 814px){
+        width: 21vw;
+        height: 180px;
+      }
+
+      @media(max-width: 610px){
+        width: 20vw;
+        height: 160px;
+      }
+
+      @media(max-width: 522px){
+        width: 27vw;
+      }
+
+      @media(max-width: 460px){
+        width: 25.5vw;
+      }
+
+
       .img {
       width: 100%;
       height: 100%;
@@ -218,24 +238,51 @@ margin-top: 40px;
     cursor: pointer;
     overflow: hidden;
 
+    @media(max-width: 882px){
+      height: 368px;
+    }
+
+    @media(max-width: 756px){
+      height: 270px;
+    }
+
+    @media(max-width: 660px){
+      height: 209px;
+    }
+
+
     .highlight-text {
       position: absolute;
-      bottom: 20px;
-      left: 20px;
+      bottom: 0px;
+      left: 0px;
       display: flex;
       align-items: center;
       background: #0000008a;
       padding: 5px 20px;
+      margin: 20px;
+
+      @media(max-width: 466px){
+        margin: 5px;
+      }
 
       .icon {
       width: 20px;
       height: 20px;
       color: white;
       margin-right: 20px; 
+
+      @media(max-width: 466px){
+        margin-right: 10px;
+      }
       }
 
       .heading {
         color: white;
+        font-size: calc(12px + 0.3vw);
+
+        @media(max-width: 660px){
+          font-size: .6rem;
+        }
       }
 
       p:nth-child(2){
@@ -264,6 +311,9 @@ margin-top: 40px;
     display: flex;
     flex-wrap: wrap;
     justify-content: space-between;
+    @media(max-width: 882px){
+      align-content: flex-start;
+    }
 
     .img-container {
       position: relative;
@@ -272,6 +322,41 @@ margin-top: 40px;
       margin: 0 10px 10px 0;
       cursor: pointer;
       overflow: hidden;
+
+      @media(max-width: 882px){
+        width: 25.5vw;
+        height: 180px;
+      }
+
+      @media(max-width: 756px){
+        width: 25vw;
+        height: 130px;
+      }
+
+      @media(max-width: 660px){
+        width: 24.5vw;
+        height: 100px;
+      }
+
+      @media(max-width: 660px){
+        width: 24vw;
+        height: 80;
+      }
+
+      @media(max-width: 529px){
+        width: 23.5vw;
+        height: 80;
+      }
+
+      @media(max-width: 482px){
+        width: 23vw;
+        height: 60;
+      }
+
+      @media(max-width: 447px){
+        width: 22vw;
+      }
+
 
       :hover {
         .img {
@@ -307,6 +392,10 @@ display: flex;
 overflow-x: scroll;
 overflow-y: hidden;
 padding: 0 50px;
+
+@media(max-width: 685px){
+  padding: 0 20px;
+}
 
 ::-webkit-scrollbar {
   width: 6px;
