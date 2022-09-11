@@ -8,6 +8,7 @@ import { store } from './app/store'
 import Home from './pages/Home'
 import Profile from './pages/Profile'
 import Login from './pages/Login'
+import SignUp from './pages/SignUp'
 import Img from './pages/Img'
 import Discover from './pages/Discover'
 import Post from './pages/Post'
@@ -19,6 +20,7 @@ const App = () => {
       <Route path="/" element={<Home />} />
       <Route path="/profile" element={<Profile />} />
       <Route path="/login" element={<Login />} />
+      <Route path="/signup" element={<SignUp />} />
       <Route path="/img" element={<Img />} />
       <Route path="/discover" element={<Discover />} />
       <Route path="/posts/:id" element={<Post />} />

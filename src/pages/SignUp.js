@@ -8,9 +8,9 @@ import Footer from '../components/Footer'
 //icons 
 import { Google } from '@styled-icons/boxicons-logos/Google'
 
-const Login = () => {
+const SignUp = () => {
   return (
-    <div className='login'>
+    <div className='sign-up'>
           <Wrapper>
             <Mockup />
 
@@ -27,18 +27,18 @@ const Login = () => {
                     <input type='password' placeholder='Password'/>
                   </div>
                   
-                  <div className='login-btn'><p>Log in</p></div>
+                  <div className='login-btn'><p>Sign Up</p></div>
 
                   <div className='divider'>
                     <p>OR</p>
                   </div>
 
-                  <div className='login-with-google'><Google className='icon' /><p>Log in with Google</p></div>
+                  <div className='login-with-google'><Google className='icon' /><p>Sign up with Google</p></div>
                 </div>
 
                 <div className='bottom'>
                   <div className='no-account'>
-                    <p>Don't have an account?</p><Link to='/signup'>Sign up</Link>
+                    <p>Already have an account?</p><Link to='/login'>Log in</Link>
                   </div>
                 </div>
               </div>
@@ -101,7 +101,7 @@ width: 50%;
       :hover {
         background: #1978d0;
       }
-
+      
       p {
         color: white;
         font-size: .8rem;
@@ -206,4 +206,4 @@ justify-content: space-between;
 padding: 0 20px;
 `
 
-export default Login
+export default SignUp

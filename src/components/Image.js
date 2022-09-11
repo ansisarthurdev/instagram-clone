@@ -102,6 +102,7 @@ margin-bottom: 40px;
     background-size: cover;
     background-position: center;
     transition: .3s cubic-bezier(.5,.17,.53,1.14);
+    object-fit: contain;
 
     :hover {
         transform: scale(1.05)
