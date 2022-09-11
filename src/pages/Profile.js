@@ -1,6 +1,7 @@
-import React, { useState } from 'react'
+import React, { useEffect } from 'react'
 import styled from 'styled-components'
-import { Link } from 'react-router-dom'
+import { Link, useNavigate } from 'react-router-dom'
+import {Helmet} from "react-helmet"
 
 //components
 import Navbar from '../components/Navbar'
@@ -11,12 +12,32 @@ import StoryProfile from '../components/StoryProfile'
 import { ArrowIosBack } from '@styled-icons/evaicons-solid/ArrowIosBack'
 import { LogOut } from '@styled-icons/boxicons-regular/LogOut'
 
+//firebase
+import { useSelector } from 'react-redux'
+import { selectUser } from '../app/appSlice'
+import { signOut } from "firebase/auth"
+import { auth } from '../app/firebase'
+
 const Profile = () => {
 
-  const [logged] = useState(false);
+  const user = useSelector(selectUser);
+  const navigate = useNavigate();
+
+  const logOut = () => {
+    signOut(auth);
+    navigate('/login');
+  }
+  
+  useEffect(() => {
+    if(user === null){
+      navigate('/login');
+    }
+  //eslint-disable-next-line
+  }, [user])
 
   return (
     <div className='profile'>
+      <Helmet><title>Instagram - Account</title></Helmet>
         <Navbar />
           <Wrapper>
             <div className='left'>
@@ -24,7 +45,7 @@ const Profile = () => {
 
                 <div className='profile-top'>
                   <Link to='/'><ArrowIosBack className='icon' /></Link>
-                  <Avatar src='./images/testImage.jpeg' />
+                  {user?.photoURL ? <Avatar src={user?.photoURL} /> : <AvatarWithOutPhoto>{user?.email[0]}</AvatarWithOutPhoto>}
                 </div>
 
                 <div className='profile-bottom'>
@@ -45,10 +66,10 @@ const Profile = () => {
                   </div>
 
                   <div className='profile-action'>
-                    {logged ? <div className='logged-btn btn'><LogOut className='icon' /> Log out</div> : <div className='follow-btn btn'>Follow</div>}
+                    {user ? <div className='logged-btn btn' onClick={() => logOut()}><LogOut className='icon' /> Log out</div> : <div className='follow-btn btn'>Follow</div>}
                   </div>
 
-                  <h3 className='profile-name'>Ansis Artūrs Irbe</h3>
+                  <h3 className='profile-name'>{user?.displayName ? user?.displayName : user?.email}</h3>
                   <p className='profile-desc'>Lorem Ipsum is simply dummy text of the printing and typesetting industry.</p>
                   <p className='profile-web'>https://github.com/ansisarthurdev</p>
 
@@ -115,6 +136,30 @@ const Profile = () => {
     </div>
   )
 }
+
+const AvatarWithOutPhoto = styled.div`
+width: 60px;
+height: 60px;
+border-radius: 50%;
+margin-left: 20%;
+font-size: 1rem;
+background: #554CD7;
+display: flex;
+justify-content: center;
+align-items: center;
+color: white;
+transition: .2s ease-out;
+
+:hover {
+  transform: scale(1.2)
+}
+
+@media(max-width: 760px){
+  margin-left: 0;
+  position: relative;
+  right: 15px;
+}
+`
 
 const Wrapper = styled.div`
 max-width: 1200px;

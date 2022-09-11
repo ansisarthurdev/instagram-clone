@@ -16,12 +16,17 @@ import Hamburger from 'hamburger-react'
 
 //components
 import Icon from './Icon'
- 
+
+//redux
+import { selectUser } from '../app/appSlice'
+import { useSelector } from 'react-redux'
+
 const Navbar = () => {
 
     const location = useLocation();
     const [searchInput, setSearchInput] = useState('');
     const [isOpen, setOpen] = useState(false);
+    const user = useSelector(selectUser);
 
   return (
     <Wrapper>
@@ -74,7 +79,7 @@ const Navbar = () => {
             />
 
             <Hamburger size={20} easing='ease-in' duration={0.2} toggled={isOpen} toggle={setOpen} />
-            <Link to='/profile' style={{position: 'relative', top: 3}}><Tooltip title='Profile'><Avatar src='../images/testImage.jpeg' /></Tooltip></Link>
+            <Link to='/profile' style={{position: 'relative', top: 3}}><Tooltip title='Profile'>{user?.photoURL ? <Avatar src={user?.photoURL} /> : <AvatarWithOutPhoto>{user?.email[0]}</AvatarWithOutPhoto>}</Tooltip></Link>
         </div>
         </DekstopNav>
 
@@ -97,6 +102,18 @@ const Navbar = () => {
     </Wrapper>
   )
 }
+
+const AvatarWithOutPhoto = styled.div`
+font-size: .7rem;
+background: #554CD7;
+width: 24px;
+height: 24px;
+border-radius: 50%;
+display: flex;
+justify-content: center;
+align-items: center;
+color: white;
+`
 
 const MobileNav = styled.div`
     padding: 10px 20px;
@@ -228,6 +245,7 @@ z-index: 100;
     a {
         color: black;
         cursor: pointer;
+        text-decoration: none;
 
         .icon {
         width: 17px;

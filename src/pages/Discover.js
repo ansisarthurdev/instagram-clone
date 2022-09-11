@@ -1,5 +1,7 @@
-import React from 'react'
+import React, { useEffect } from 'react'
 import styled from 'styled-components'
+import {Helmet} from "react-helmet"
+import { useNavigate } from 'react-router-dom'
 
 //components
 import Navbar from '../components/Navbar'
@@ -10,7 +12,14 @@ import Category from '../components/Category'
 import { PlayFill } from '@styled-icons/bootstrap/PlayFill'
 import { CameraVideoFill } from '@styled-icons/bootstrap/CameraVideoFill'
 
+//redux
+import { useSelector } from 'react-redux'
+import { selectUser } from '../app/appSlice'
+
 const Discover = () => {
+
+  const user = useSelector(selectUser);
+  const navigate = useNavigate();
 
   const categories = [{
     name: 'For you',
@@ -54,8 +63,16 @@ const Discover = () => {
   },
   ]
 
+  useEffect(() => {
+    if(user === null){
+      navigate('/login');
+    }
+  //eslint-disable-next-line
+  }, [user])
+
   return (
     <div className='profile'>
+        <Helmet><title>Instagram - Discover</title></Helmet>
         <Navbar />
           <Wrapper>
             

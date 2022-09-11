@@ -1,6 +1,7 @@
 import React from 'react'
 import styled from 'styled-components'
 import { Link } from 'react-router-dom'
+import {Helmet} from "react-helmet"
 import Tooltip from '@mui/material/Tooltip'
 
 //components
@@ -57,6 +58,7 @@ const Post = ({id}) => {
 
   return (
     <div className='post'>
+      <Helmet><title>Instagram - Post</title></Helmet>
         <Navbar />
           <Wrapper>
             <PostTop>

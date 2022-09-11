@@ -1,6 +1,7 @@
-import React from 'react'
+import React, { useState, useEffect } from 'react'
 import styled from 'styled-components'
-import { Link } from 'react-router-dom'
+import { Link, useNavigate } from 'react-router-dom'
+import {Helmet} from "react-helmet"
 
 //components
 import Footer from '../components/Footer'
@@ -8,9 +9,59 @@ import Footer from '../components/Footer'
 //icons 
 import { Google } from '@styled-icons/boxicons-logos/Google'
 
+//firebase
+import { auth } from '../app/firebase'
+import { createUserWithEmailAndPassword, signInWithPopup, GoogleAuthProvider } from 'firebase/auth'
+import { useSelector } from 'react-redux'
+import { selectUser } from '../app/appSlice'
+
 const SignUp = () => {
+
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
+
+  const navigate = useNavigate();
+  const user = useSelector(selectUser);
+  
+  const [alert, setAlert] = useState(null);
+  const provider = new GoogleAuthProvider();
+
+  const createUser = () => {
+    if(email?.length !== 0 && password?.length !== 0){
+
+      createUserWithEmailAndPassword(auth, email, password)
+      .then((userCredential) => {
+        // Signed in 
+        navigate('/');
+      })
+      .catch((error) => {
+        const errorMessage = error.message;
+        setAlert(errorMessage)
+      });
+
+    } else {
+      setAlert('Empty username and/or password')
+    }
+  }
+
+  const createUserWithGoogle = () => {
+    signInWithPopup(auth, provider)
+    .catch((error) => {
+      const errorMessage = error.message;
+      setAlert(errorMessage);
+    });
+  }
+
+  useEffect(() => {
+    if(user !== null){
+      navigate('/');
+    }
+  //eslint-disable-next-line
+  }, [user])
+
   return (
     <div className='sign-up'>
+        <Helmet><title>Instagram - Sign up</title></Helmet>
           <Wrapper>
             <Mockup />
 
@@ -19,21 +70,23 @@ const SignUp = () => {
                 <div className='top'>
                   <img src='../images/Instagram_logo.png' alt='' />
 
+                  {alert && <Alert>{alert}</Alert>}
+
                   <div className='input-box'>
-                    <input type='email' placeholder='Email'/>
+                    <input type='email' placeholder='Email' name={email} onChange={e => setEmail(e.target.value)}/>
                   </div>
 
                   <div className='input-box'>
-                    <input type='password' placeholder='Password'/>
+                    <input type='password' placeholder='Password' name={password} onChange={e => setPassword(e.target.value)} />
                   </div>
                   
-                  <div className='login-btn'><p>Sign Up</p></div>
+                  <div className='login-btn' onClick={createUser}><p>Sign Up</p></div>
 
                   <div className='divider'>
                     <p>OR</p>
                   </div>
 
-                  <div className='login-with-google'><Google className='icon' /><p>Sign up with Google</p></div>
+                  <div className='login-with-google' onClick={createUserWithGoogle}><Google className='icon' /><p>Sign up with Google</p></div>
                 </div>
 
                 <div className='bottom'>
@@ -48,6 +101,15 @@ const SignUp = () => {
     </div>
   )
 }
+
+const Alert = styled.div`
+background: #dc3545;
+width: 80%;
+margin: 10px auto;
+padding: 10px;
+color: white;
+font-size: .8rem;
+`
 
 const LoginWrapper = styled.div`
 width: 50%;
