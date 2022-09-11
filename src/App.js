@@ -31,13 +31,14 @@ const App = () => {
 
   useEffect(() => {
     checkUser();
+    //eslint-disable-next-line
   }, [])
   
   
   return (
     <Routes>
       <Route path="/" element={<Home />} />
-      <Route path="/profile" element={<Profile />} />
+      <Route path="/profile" exact element={<Profile />} />
       <Route path="/login" element={<Login />} />
       <Route path="/signup" element={<SignUp />} />
       <Route path="/discover" element={<Discover />} />

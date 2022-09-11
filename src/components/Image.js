@@ -9,7 +9,7 @@ import { Comment } from '@styled-icons/boxicons-regular/Comment'
 import { Send } from '@styled-icons/feather/Send'
 import { MoreHorizontalOutline } from '@styled-icons/evaicons-outline/MoreHorizontalOutline'
 
-const Image = ({ id, image, userImage, userName, postAdded, likes }) => {
+const Image = ({ id, image, userId, userImage, userName, postAdded, likes}) => {
   return (
     <Wrapper>
         <Link to={`./posts/${id}`}>
@@ -17,13 +17,13 @@ const Image = ({ id, image, userImage, userName, postAdded, likes }) => {
         </Link>
         <InstaInfo>
             <div className='left'>
-                <Link to={`./users/${userName}`}>
+                <Link to={`./profile/${userId}`}>
                 <div>
                     <Avatar src={userImage} />
                 </div>
                 </Link>
                 <div style={{display: 'flex', flexDirection: 'column'}}>
-                    <Link to={`./users/${userName}`}><h4 style={{fontSize: '.7rem'}}>{userName}</h4></Link>
+                    <Link to={`./profile/${userId}`}><h4 style={{fontSize: '.7rem'}}>{userName}</h4></Link>
                     <p style={{fontSize: '.5rem', opacity: '0.8'}}>{postAdded}</p>
                 </div>
             </div>

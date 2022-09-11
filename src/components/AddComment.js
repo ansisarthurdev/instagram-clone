@@ -5,7 +5,7 @@ import Picker from 'emoji-picker-react';
 //icons
 import { EmojiAdd } from '@styled-icons/fluentui-system-regular/EmojiAdd'
 
-const AddComment = () => {
+const AddComment = ({id}) => {
 
     const [comment, setComment] = useState('');
     const [picker, setPicker] = useState(false);

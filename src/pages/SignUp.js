@@ -10,8 +10,10 @@ import Footer from '../components/Footer'
 import { Google } from '@styled-icons/boxicons-logos/Google'
 
 //firebase
-import { auth } from '../app/firebase'
+import { auth, db } from '../app/firebase'
 import { createUserWithEmailAndPassword, signInWithPopup, GoogleAuthProvider } from 'firebase/auth'
+import { doc, setDoc } from "firebase/firestore"
+
 import { useSelector } from 'react-redux'
 import { selectUser } from '../app/appSlice'
 
@@ -32,6 +34,15 @@ const SignUp = () => {
       createUserWithEmailAndPassword(auth, email, password)
       .then((userCredential) => {
         // Signed in 
+        const user = userCredential.user;
+        
+        setDoc(doc(db, 'users', user.uid), {
+          uid: user.uid,
+          email: user.email,
+          description: '',
+          homepage: ''
+        });
+
         navigate('/');
       })
       .catch((error) => {
@@ -46,6 +57,17 @@ const SignUp = () => {
 
   const createUserWithGoogle = () => {
     signInWithPopup(auth, provider)
+    .then((result) => {
+      const user = result.user;
+
+      setDoc(doc(db, 'users', user.uid), {
+        uid: user.uid,
+        email: user.email,
+        description: '',
+        homepage: ''
+      });
+
+    })
     .catch((error) => {
       const errorMessage = error.message;
       setAlert(errorMessage);

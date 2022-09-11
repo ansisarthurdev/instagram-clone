@@ -1,6 +1,6 @@
-import React from 'react'
+import React, { useEffect, useState } from 'react'
 import styled from 'styled-components'
-import { Link } from 'react-router-dom'
+import { Link, useParams } from 'react-router-dom'
 import {Helmet} from "react-helmet"
 import Tooltip from '@mui/material/Tooltip'
 
@@ -17,7 +17,14 @@ import { Comment } from '@styled-icons/boxicons-regular/Comment'
 import { Send } from '@styled-icons/feather/Send'
 import { Bookmark } from '@styled-icons/bootstrap/Bookmark'
 
-const Post = ({id}) => {
+//firebase
+import { doc, getDoc } from "firebase/firestore"
+import { db } from '../app/firebase'
+
+const Post = () => {
+
+  const params = useParams();
+  const [postData, setPostData] = useState(null);
 
   const comments = [{
     id: 1,
@@ -56,6 +63,17 @@ const Post = ({id}) => {
     avatar: '../images/testImage.jpeg'
   },]
 
+  useEffect(() => {
+    const getData = async() => {
+      const docRef = doc(db, 'posts', params.id);
+      const docSnap = await getDoc(docRef);
+      setPostData(docSnap.data());
+    }
+
+    getData();
+    //eslint-disable-next-line
+  }, [])
+
   return (
     <div className='post'>
       <Helmet><title>Instagram - Post</title></Helmet>
@@ -63,9 +81,9 @@ const Post = ({id}) => {
           <Wrapper>
             <PostTop>
               <div className='left'>
-                <Link to='/'><Avatar src='../images/testImage.jpeg'/></Link>
+                <Link to={`/profile/${postData?.uid}`}><Avatar src={postData?.profileImg}/></Link>
                 <div>
-                  <Link to='/'><h4 style={{fontSize: '.7rem'}}>ansisarthur</h4></Link>
+                  <Link to={`/profile/${postData?.uid}`}><h4 style={{fontSize: '.7rem'}}>{postData?.username}</h4></Link>
                   <p style={{fontSize: '.5rem', opacity: '0.8'}}>1hr ago</p>
                 </div>
               </div>
@@ -76,7 +94,7 @@ const Post = ({id}) => {
             </PostTop>
             
             {/* Image */}  
-            <img src='https://images.unsplash.com/photo-1531366936337-7c912a4589a7?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=870&q=80' className='post-image' alt=''/>
+            <img src={postData?.image} className='post-image' alt=''/>
 
             <PostActions>
               <div className='left'>
@@ -103,7 +121,7 @@ const Post = ({id}) => {
               ))}
             </div>
 
-            <AddComment />
+            <AddComment id={params.id} />
           </Wrapper>
         <Footer />
     </div>
