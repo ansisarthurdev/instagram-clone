@@ -13,7 +13,8 @@ import { Google } from '@styled-icons/boxicons-logos/Google'
 import { useSelector } from 'react-redux'
 import { selectUser } from '../app/appSlice'
 import { signInWithEmailAndPassword, signInWithPopup, GoogleAuthProvider } from "firebase/auth"
-import { auth } from '../app/firebase'
+import { auth, db } from '../app/firebase'
+import { doc, setDoc } from "firebase/firestore"
 
 const Login = () => {
 
@@ -48,6 +49,17 @@ const Login = () => {
 
   const logInWithGoogle = () => {
     signInWithPopup(auth, provider)
+    .then((result) => {
+      const user = result.user;
+
+      setDoc(doc(db, 'users', user.uid), {
+        uid: user.uid,
+        email: user.email,
+        description: '',
+        homepage: ''
+      });
+
+    })
     .catch((error) => {
       const errorMessage = error.message;
       setAlert(errorMessage);

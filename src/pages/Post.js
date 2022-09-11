@@ -13,55 +13,36 @@ import AddComment from '../components/AddComment'
 //icons
 import { MoreHorizontalOutline } from '@styled-icons/evaicons-outline/MoreHorizontalOutline'
 import { HeartOutline } from '@styled-icons/evaicons-outline/HeartOutline'
+import { Heart } from '@styled-icons/evaicons-solid/Heart'
 import { Comment } from '@styled-icons/boxicons-regular/Comment'
 import { Send } from '@styled-icons/feather/Send'
 import { Bookmark } from '@styled-icons/bootstrap/Bookmark'
 
 //firebase
-import { doc, getDoc } from "firebase/firestore"
+import { doc, getDoc, onSnapshot, query, orderBy, collection, setDoc, deleteDoc } from "firebase/firestore"
 import { db } from '../app/firebase'
+import { useSelector } from 'react-redux'
+import { selectUser } from '../app/appSlice'
 
 const Post = () => {
 
+  const user = useSelector(selectUser);
   const params = useParams();
   const [postData, setPostData] = useState(null);
+  const [comments, setComments] = useState(null);
+  const [likes, setLikes] = useState(null);
+  const [hasLiked, setHasLiked] = useState(null);
 
-  const comments = [{
-    id: 1,
-    name: 'ansisarthur',
-    comment: 'this is a test comment',
-    avatar: '../images/testImage.jpeg'
-  },
-  {
-    id: 2,
-    name: 'Elon Musk',
-    comment: 'Nice Pic! Is it Kittila?',
-    avatar: 'https://ichef.bbci.co.uk/news/976/cpsprodpb/15E47/production/_124717698_gettyimages-1395200655.jpg'
-  },
-  {
-    id: 3,  
-    name: 'ansisarthur',
-    comment: 'this is a test comment',
-    avatar: '../images/testImage.jpeg'
-  },
-  {
-    id: 4,
-    name: 'ansisarthur',
-    comment: 'this is a test comment',
-    avatar: '../images/testImage.jpeg'
-  },
-  {
-    id: 5,
-    name: 'ansisarthur',
-    comment: 'this is a test comment',
-    avatar: '../images/testImage.jpeg'
-  },
-  {
-    id: 6,
-    name: 'ansisarthur',
-    comment: 'this is a test comment',
-    avatar: '../images/testImage.jpeg'
-  },]
+  const likePost = async() => {
+    if(hasLiked){
+      await deleteDoc(doc(db, 'posts', params.id, 'likes', user?.uid))
+    } else {
+      await setDoc(doc(db, 'posts', params?.id, 'likes', user?.uid), {
+        username: user?.displayName ? user?.displayName : user?.email,
+        uid: user?.uid
+      })
+    }
+  }
 
   useEffect(() => {
     const getData = async() => {
@@ -74,6 +55,29 @@ const Post = () => {
     //eslint-disable-next-line
   }, [])
 
+  useEffect(() => {
+    onSnapshot(query(collection(db, 'posts', params.id, 'comments'),
+    orderBy('timestamp', 'desc')
+    ), (snapshot) => setComments(snapshot.docs)
+    )
+
+    //eslint-disable-next-line
+  }, [db, params.id])
+
+  useEffect(() => {
+    onSnapshot(collection(db, 'posts', params.id, 'likes'), (snapshot) => setLikes(snapshot.docs))
+    //eslint-disable-next-line
+  }, [db, params.id])
+
+  useEffect(() => {
+    setHasLiked(
+      likes?.findIndex((like) => like?.id === user?.uid) !== -1
+    )
+    //eslint-disabled-next-line
+  }, [likes, user?.uid])
+
+  console.log(hasLiked)
+  
   return (
     <div className='post'>
       <Helmet><title>Instagram - Post</title></Helmet>
@@ -98,7 +102,8 @@ const Post = () => {
 
             <PostActions>
               <div className='left'>
-                <HeartOutline className='icon'/>
+                {!hasLiked ? <HeartOutline className='icon' onClick={likePost} /> : <Heart className='icon' style={{color: 'red'}} onClick={likePost} />}
+
                 <Comment className='icon'/>
                 <Send className='icon'/>
               </div>
@@ -108,18 +113,21 @@ const Post = () => {
               </div>
             </PostActions>
 
+            <p className='post-description'>{postData?.caption}</p>
             <p className='post-like-count'>Liked by <span className='last-liked'><Link to='/'>Elon Musk</Link></span> and <span className='like-count'><Link to='/'>120 others</Link></span></p>
 
-            <div className='post-comments'>
+            {comments?.length > 0 && <>
+              <div className='post-comments'>
               {comments?.map(comment => (
                 <CommentItem 
                   key={comment?.id}
-                  name={comment?.name}
-                  comment={comment?.comment}
-                  avatar={comment?.avatar}
+                  name={comment?.data().username}
+                  comment={comment?.data().comment}
+                  avatar={comment?.data().userImage}
                 />
               ))}
-            </div>
+              </div>
+            </>}
 
             <AddComment id={params.id} />
           </Wrapper>
@@ -191,6 +199,11 @@ const Wrapper = styled.div`
 max-width: 800px;
 margin: 20px auto 0;
 padding: 20px 20px;
+
+.post-description {
+  font-size: .8rem;
+  margin: 10px 0;
+}
 
 .post-comments {
   height: 130px;

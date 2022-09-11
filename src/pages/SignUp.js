@@ -26,7 +26,6 @@ const SignUp = () => {
   const user = useSelector(selectUser);
   
   const [alert, setAlert] = useState(null);
-  const provider = new GoogleAuthProvider();
 
   const createUser = () => {
     if(email?.length !== 0 && password?.length !== 0){
@@ -53,25 +52,6 @@ const SignUp = () => {
     } else {
       setAlert('Empty username and/or password')
     }
-  }
-
-  const createUserWithGoogle = () => {
-    signInWithPopup(auth, provider)
-    .then((result) => {
-      const user = result.user;
-
-      setDoc(doc(db, 'users', user.uid), {
-        uid: user.uid,
-        email: user.email,
-        description: '',
-        homepage: ''
-      });
-
-    })
-    .catch((error) => {
-      const errorMessage = error.message;
-      setAlert(errorMessage);
-    });
   }
 
   useEffect(() => {
@@ -103,12 +83,7 @@ const SignUp = () => {
                   </div>
                   
                   <div className='login-btn' onClick={createUser}><p>Sign Up</p></div>
-
-                  <div className='divider'>
-                    <p>OR</p>
-                  </div>
-
-                  <div className='login-with-google' onClick={createUserWithGoogle}><Google className='icon' /><p>Sign up with Google</p></div>
+                
                 </div>
 
                 <div className='bottom'>
