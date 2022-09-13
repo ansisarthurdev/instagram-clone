@@ -58,8 +58,7 @@ const Post = () => {
   useEffect(() => {
     onSnapshot(query(collection(db, 'posts', params.id, 'comments'),
     orderBy('timestamp', 'desc')
-    ), (snapshot) => setComments(snapshot.docs)
-    )
+    ), (snapshot) => setComments(snapshot.docs))
 
     //eslint-disable-next-line
   }, [db, params.id])
@@ -75,8 +74,6 @@ const Post = () => {
     )
     //eslint-disabled-next-line
   }, [likes, user?.uid])
-
-  console.log(hasLiked)
   
   return (
     <div className='post'>
@@ -114,7 +111,7 @@ const Post = () => {
             </PostActions>
 
             <p className='post-description'>{postData?.caption}</p>
-            <p className='post-like-count'>Liked by <span className='last-liked'><Link to='/'>Elon Musk</Link></span> and <span className='like-count'><Link to='/'>120 others</Link></span></p>
+            {likes?.length > 0 && <><p className='post-like-count'>Liked by <span className='last-liked'><Link to='/'>{likes[0]?.data()?.username}</Link></span> and <span className='like-count'><Link to='/'>120 others</Link></span></p></>}
 
             {comments?.length > 0 && <>
               <div className='post-comments'>
@@ -206,7 +203,8 @@ padding: 20px 20px;
 }
 
 .post-comments {
-  height: 130px;
+  min-height: 30px;
+  max-height: 130px;
   overflow-y: scroll;
   margin-bottom: 10px;
 

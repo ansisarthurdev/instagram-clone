@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react'
+import React, { useEffect, useState } from 'react'
 import styled from 'styled-components'
 import { Link, useNavigate } from 'react-router-dom'
 import {Helmet} from "react-helmet"
@@ -16,18 +16,27 @@ import { LogOut } from '@styled-icons/boxicons-regular/LogOut'
 import { useSelector } from 'react-redux'
 import { selectUser } from '../app/appSlice'
 import { signOut } from "firebase/auth"
-import { auth } from '../app/firebase'
-//import { collection, query, where, getDocs } from "firebase/firestore";
+import { auth, db } from '../app/firebase'
+import { doc, getDoc } from "firebase/firestore";
 
 const Profile = () => {
 
   const user = useSelector(selectUser);
   const navigate = useNavigate();
-  //const [posts, setPosts] = useState([]);
+  const [userData, setUserData] = useState(null);
 
   const logOut = () => {
     signOut(auth);
     navigate('/login');
+  }
+
+  const getUserDataFromDb = async () => {
+    const docRef = doc(db, "users", user?.uid);
+    const docSnap = await getDoc(docRef);
+
+    if (docSnap.exists()) {
+      setUserData(docSnap.data());
+    }
   }
   
   useEffect(() => {
@@ -37,9 +46,15 @@ const Profile = () => {
   //eslint-disable-next-line
   }, [user])
 
+  useEffect(() => {
+    getUserDataFromDb();
+
+  //eslint-disable-next-line
+  }, [])
+
   return (
     <div className='profile'>
-      <Helmet><title>Instagram - Account</title></Helmet>
+      <Helmet><title>{`Instagram - ${userData?.userDisplayName}`}</title></Helmet>
         <Navbar />
           <Wrapper>
             <div className='left'>
@@ -47,22 +62,22 @@ const Profile = () => {
 
                 <div className='profile-top'>
                   <Link to='/'><ArrowIosBack className='icon' /></Link>
-                  {user?.photoURL ? <Avatar src={user?.photoURL} /> : <Avatar src='data:image/png;base64,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' />}
+                  <Avatar src={userData?.userImage}/>
                 </div>
 
                 <div className='profile-bottom'>
 
                   <div className='profile-stats'>
                     <div className='stat'>
-                      <h3>518</h3>
+                      <h3>{userData?.posts?.length}</h3>
                       <p>posts</p>
                     </div>
                     <div className='stat'>
-                      <h3>220k</h3>
+                      <h3>{userData?.followersId?.length}</h3>
                       <p>followers</p>
                     </div>
                     <div className='stat'>
-                      <h3>197</h3>
+                      <h3>{userData?.followingId?.length}</h3>
                       <p>following</p>
                     </div>
                   </div>
@@ -71,9 +86,9 @@ const Profile = () => {
                     {user ? <div className='logged-btn btn' onClick={() => logOut()}><LogOut className='icon' /> Log out</div> : <div className='follow-btn btn'>Follow</div>}
                   </div>
 
-                  <h3 className='profile-name'>{user?.displayName ? user?.displayName : user?.email}</h3>
-                  <p className='profile-desc'>Lorem Ipsum is simply dummy text of the printing and typesetting industry.</p>
-                  <p className='profile-web'>https://github.com/ansisarthurdev</p>
+                  <h3 className='profile-name'>{user?.displayName}</h3>
+                  <p className='profile-desc'>{userData?.description}</p>
+                  <p className='profile-web'>{userData?.homepage}</p>
 
                   <div className='stories'>
                     <StoryProfile 
@@ -124,13 +139,9 @@ const Profile = () => {
             </div>
             <div className='right'>
               <div className='images'>
-                <div className='img' style={{ backgroundImage: `url(${"https://images.unsplash.com/photo-1662436267866-c299b8bdce57?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=774&q=80"})` }}></div>
-                <div className='img' style={{ backgroundImage: `url(${"https://images.unsplash.com/photo-1662436267866-c299b8bdce57?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=774&q=80"})` }}></div>
-                <div className='img' style={{ backgroundImage: `url(${"https://images.unsplash.com/photo-1662436267866-c299b8bdce57?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=774&q=80"})` }}></div>
-                <div className='img' style={{ backgroundImage: `url(${"https://images.unsplash.com/photo-1662436267866-c299b8bdce57?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=774&q=80"})` }}></div>
-                <div className='img' style={{ backgroundImage: `url(${"https://images.unsplash.com/photo-1662436267866-c299b8bdce57?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=774&q=80"})` }}></div>
-                <div className='img' style={{ backgroundImage: `url(${"https://images.unsplash.com/photo-1662436267866-c299b8bdce57?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=774&q=80"})` }}></div>
-                <div className='img' style={{ backgroundImage: `url(${"https://images.unsplash.com/photo-1662436267866-c299b8bdce57?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=774&q=80"})` }}></div>
+                {userData?.posts?.map(post => (
+                  <Link to={`../posts/${post?.id}`}><div className='img' style={{ backgroundImage: `url(${post?.image})` }}></div></Link>
+                ))}
               </div>
             </div>
           </Wrapper>
@@ -294,13 +305,11 @@ display: flex;
       margin-top: 50px;
     }
 
-    .img {
+    a {
+
       width: 30%;
       height: 280px;
-      background-size: cover;
-      background-position: center;
       margin: 0 20px 20px 0;
-      transition: .3s cubic-bezier(.5,.17,.53,1.14);
 
       @media(max-width: 1000px) {
         width: 45%;
@@ -311,9 +320,18 @@ display: flex;
         margin-right: 10px;
       }
 
+      .img {
+      width: 100%;
+      height: 100%;
+      background-size: cover;
+      background-position: center;
+      transition: .3s cubic-bezier(.5,.17,.53,1.14);
+
       :hover {
         transform: scale(1.1);
       }
+
+    }
 
     }
   }

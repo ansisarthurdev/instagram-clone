@@ -11,7 +11,7 @@ import { Google } from '@styled-icons/boxicons-logos/Google'
 
 //firebase
 import { auth, db } from '../app/firebase'
-import { createUserWithEmailAndPassword, signInWithPopup, GoogleAuthProvider } from 'firebase/auth'
+import { createUserWithEmailAndPassword, updateProfile } from 'firebase/auth'
 import { doc, setDoc } from "firebase/firestore"
 
 import { useSelector } from 'react-redux'
@@ -19,6 +19,7 @@ import { selectUser } from '../app/appSlice'
 
 const SignUp = () => {
 
+  const [username, setUsername] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
 
@@ -28,7 +29,7 @@ const SignUp = () => {
   const [alert, setAlert] = useState(null);
 
   const createUser = () => {
-    if(email?.length !== 0 && password?.length !== 0){
+    if(email?.length !== 0 && password?.length !== 0 && username?.length !== 0){
 
       createUserWithEmailAndPassword(auth, email, password)
       .then((userCredential) => {
@@ -39,8 +40,18 @@ const SignUp = () => {
           uid: user.uid,
           email: user.email,
           description: '',
-          homepage: ''
+          homepage: '',
+          followersId: [],
+          followingId: [],
+          likedPosts: [],
+          posts: [],
+          userDisplayName: username,
+          userImage: '../images/userImg.png',
         });
+
+        updateProfile(auth.currentUser, {
+          displayName: username, photoURL: "../images/userImg.png"
+        })
 
         navigate('/');
       })
@@ -50,7 +61,7 @@ const SignUp = () => {
       });
 
     } else {
-      setAlert('Empty username and/or password')
+      setAlert('Check registration fields again!')
     }
   }
 
@@ -73,6 +84,10 @@ const SignUp = () => {
                   <img src='../images/Instagram_logo.png' alt='' />
 
                   {alert && <Alert>{alert}</Alert>}
+
+                  <div className='input-box'>
+                    <input type='text' placeholder='Username' name={username} onChange={e => setUsername(e.target.value)}/>
+                  </div>
 
                   <div className='input-box'>
                     <input type='email' placeholder='Email' name={email} onChange={e => setEmail(e.target.value)}/>

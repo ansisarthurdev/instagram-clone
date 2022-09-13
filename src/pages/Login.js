@@ -56,7 +56,13 @@ const Login = () => {
         uid: user.uid,
         email: user.email,
         description: '',
-        homepage: ''
+        homepage: '',
+        followersId: [],
+        followingId: [],
+        likedPosts: [],
+        posts: [],
+        userDisplayName: user.displayName,
+        userImage: user.photoURL,
       });
 
     })

@@ -29,7 +29,7 @@ const Images = () => {
                 image={img?.data().image}
                 userImage={img?.data().profileImg}
                 userName={img?.data().username}
-                likes={'0'}
+                likes={img?.data().likes}
             />
         ))}
     </Wrapper>
