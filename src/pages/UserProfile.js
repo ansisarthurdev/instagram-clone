@@ -6,7 +6,7 @@ import {Helmet} from "react-helmet"
 //components
 import Navbar from '../components/Navbar'
 import Footer from '../components/Footer'
-import StoryProfile from '../components/StoryProfile'
+//import StoryProfile from '../components/StoryProfile'
 
 //icons
 import { ArrowIosBack } from '@styled-icons/evaicons-solid/ArrowIosBack'
@@ -17,7 +17,7 @@ import { useSelector } from 'react-redux'
 import { selectUser } from '../app/appSlice'
 import { signOut } from "firebase/auth"
 import { auth, db } from '../app/firebase'
-import { doc, getDoc } from "firebase/firestore";
+import { doc, getDoc, updateDoc, arrayUnion, onSnapshot } from "firebase/firestore";
 
 const Profile = () => {
 
@@ -25,6 +25,7 @@ const Profile = () => {
   const navigate = useNavigate();
   const params = useParams();
   const [userData, setUserData] = useState(null);
+  const [followed, isFollowing] = useState();
 
   const logOut = () => {
     signOut(auth);
@@ -32,15 +33,50 @@ const Profile = () => {
   }
 
   const getUserDataFromDb = async () => {
-    const docRef = doc(db, "users", params?.id);
-    const docSnap = await getDoc(docRef);
+    const unsub = onSnapshot(doc(db, 'users', params?.id), (doc) => {
+      setUserData(doc.data());
+    });
 
-    if (docSnap.exists()) {
-      setUserData(docSnap.data());
-    }
+    return unsub;
   }
-  
+
+  const followUser = async () => {
+
+    const currentUser = doc(db, 'users', user?.uid);
+    const followingUser = doc(db, 'users', userData?.uid)
+    
+    //add following to current user data
+    await updateDoc(currentUser, {
+      followingId: arrayUnion({id: userData?.uid, userDisplayName: userData?.userDisplayName, userImage: userData?.userImage})
+    });
+
+    //add followed to following user
+    await updateDoc(followingUser, {
+      followersId: arrayUnion({id: user?.uid, userDisplayName: user?.displayName, userImage: user?.photoURL})
+    });
+  }
+
+  const unFollowUser = async () => {
+
+    const currentUser = doc(db, 'users', user?.uid);
+    const followingUser = doc(db, 'users', userData?.uid);
+
+    const currentUserSnap = await getDoc(currentUser);
+    const followingUserSnap = await getDoc(followingUser);
+    
+    //remove following from current user data
+    await updateDoc(currentUser, {
+      followingId: currentUserSnap.data()?.followingId?.filter(following => following?.id !== userData?.uid)
+    });
+
+    //remove followed from following user
+    await updateDoc(followingUser, {
+      followersId: followingUserSnap.data()?.followersId?.filter(following => following?.id !== user?.uid)
+    });
+  }
+   
   useEffect(() => {
+    //return if user not logged in
     if(user === null){
       navigate('/login');
     }
@@ -48,10 +84,21 @@ const Profile = () => {
   }, [user])
 
   useEffect(() => {
+    //get requested user data from db
     getUserDataFromDb();
-
   //eslint-disable-next-line
   }, [])
+
+
+  useEffect(() => {
+  //check if followed
+    isFollowing(
+      userData?.followersId?.findIndex((follower) => follower?.id === user?.uid) === -1
+    )
+    //eslint-disabled-next-line
+  }, [userData])
+
+  console.log(followed)
 
   return (
     <div className='profile'>
@@ -84,7 +131,7 @@ const Profile = () => {
                   </div>
 
                   <div className='profile-action'>
-                    {userData?.uid === user?.uid ? <div className='logged-btn btn' onClick={() => logOut()}><LogOut className='icon' /> Log out</div> : <div className='follow-btn btn'>Follow</div>}
+                    {userData?.uid === user?.uid ? <div className='logged-btn btn' onClick={() => logOut()}><LogOut className='icon' /> Log out</div> : <>{!followed ? <div className='unfollow-btn btn' onClick={() => unFollowUser()}>Unfollow</div> : <div className='follow-btn btn' onClick={() => followUser()}>Follow</div>}</>}
                   </div>
 
                   <h3 className='profile-name'>{userData?.userDisplayName}</h3>
@@ -250,6 +297,10 @@ display: flex;
 
         .follow-btn {
           background: #218CEE;
+        }
+
+        .unfollow-btn {
+          background: #DC3545;
         }
 
         .logged-btn {

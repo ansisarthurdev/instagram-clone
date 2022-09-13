@@ -2,7 +2,7 @@ import { createSlice } from '@reduxjs/toolkit';
 
 const initialState = {
   stories: null,
-  user: null
+  user: 'loading'
 };
 
 export const appSlice = createSlice({
