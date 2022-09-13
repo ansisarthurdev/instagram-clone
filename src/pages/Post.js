@@ -3,6 +3,7 @@ import styled from 'styled-components'
 import { Link, useParams } from 'react-router-dom'
 import {Helmet} from "react-helmet"
 import Tooltip from '@mui/material/Tooltip'
+import moment from 'moment';
 
 //components
 import Navbar from '../components/Navbar'
@@ -85,7 +86,7 @@ const Post = () => {
                 <Link to={`/profile/${postData?.uid}`}><Avatar src={postData?.profileImg}/></Link>
                 <div>
                   <Link to={`/profile/${postData?.uid}`}><h4 style={{fontSize: '.7rem'}}>{postData?.username}</h4></Link>
-                  <p style={{fontSize: '.5rem', opacity: '0.8'}}>1hr ago</p>
+                  <p style={{fontSize: '.5rem', opacity: '0.8'}}>{moment(new Date(postData?.timestamp?.toMillis())).fromNow()}</p>
                 </div>
               </div>
               
@@ -111,7 +112,7 @@ const Post = () => {
             </PostActions>
 
             <p className='post-description'>{postData?.caption}</p>
-            {likes?.length > 0 && <><p className='post-like-count'>Liked by <span className='last-liked'><Link to='/'>{likes[0]?.data()?.username}</Link></span> and <span className='like-count'><Link to='/'>120 others</Link></span></p></>}
+            {likes?.length > 0 && <><p className='post-like-count'>Liked by <span className='last-liked'><Link to='/'>{likes[0]?.data()?.username}</Link></span> {likes?.length > 1 && <>and <span className='like-count'><Link to='/'>{likes?.length - 1} others</Link></span></>}</p></>}
 
             {comments?.length > 0 && <>
               <div className='post-comments'>

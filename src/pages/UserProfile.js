@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react'
 import styled from 'styled-components'
-import { Link, useNavigate } from 'react-router-dom'
+import { Link, useNavigate, useParams } from 'react-router-dom'
 import {Helmet} from "react-helmet"
 
 //components
@@ -23,6 +23,7 @@ const Profile = () => {
 
   const user = useSelector(selectUser);
   const navigate = useNavigate();
+  const params = useParams();
   const [userData, setUserData] = useState(null);
 
   const logOut = () => {
@@ -31,7 +32,7 @@ const Profile = () => {
   }
 
   const getUserDataFromDb = async () => {
-    const docRef = doc(db, "users", user?.uid);
+    const docRef = doc(db, "users", params?.id);
     const docSnap = await getDoc(docRef);
 
     if (docSnap.exists()) {
@@ -83,7 +84,7 @@ const Profile = () => {
                   </div>
 
                   <div className='profile-action'>
-                    {user ? <div className='logged-btn btn' onClick={() => logOut()}><LogOut className='icon' /> Log out</div> : <div className='follow-btn btn'>Follow</div>}
+                    {userData?.uid === user?.uid ? <div className='logged-btn btn' onClick={() => logOut()}><LogOut className='icon' /> Log out</div> : <div className='follow-btn btn'>Follow</div>}
                   </div>
 
                   <h3 className='profile-name'>{userData?.userDisplayName}</h3>
@@ -132,7 +133,7 @@ const Profile = () => {
                       userName= 'Story6'
                       seen='false'
                     />
-                  </div>*/}
+                    </div>*/}
                 </div>
 
               </div>
