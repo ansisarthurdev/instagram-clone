@@ -20,7 +20,7 @@ import { Send } from '@styled-icons/feather/Send'
 import { Bookmark } from '@styled-icons/bootstrap/Bookmark'
 
 //firebase
-import { doc, getDoc, onSnapshot, query, orderBy, collection, setDoc, deleteDoc } from "firebase/firestore"
+import { doc, getDoc, onSnapshot, query, orderBy, collection, setDoc, deleteDoc, updateDoc, increment } from "firebase/firestore"
 import { db } from '../app/firebase'
 import { useSelector } from 'react-redux'
 import { selectUser } from '../app/appSlice'
@@ -36,12 +36,20 @@ const Post = () => {
 
   const likePost = async() => {
     if(hasLiked){
-      await deleteDoc(doc(db, 'posts', params.id, 'likes', user?.uid))
+      await deleteDoc(doc(db, 'posts', params.id, 'likes', user?.uid));
+
+      await updateDoc(doc(db, 'posts', params?.id ), {
+        likes: increment(-1)
+      });
     } else {
       await setDoc(doc(db, 'posts', params?.id, 'likes', user?.uid), {
         username: user?.displayName ? user?.displayName : user?.email,
         uid: user?.uid
       })
+
+      await updateDoc(doc(db, 'posts', params?.id ), {
+        likes: increment(1)
+      });
     }
   }
 

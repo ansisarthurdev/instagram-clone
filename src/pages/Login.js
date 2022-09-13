@@ -14,7 +14,7 @@ import { useSelector } from 'react-redux'
 import { selectUser } from '../app/appSlice'
 import { signInWithEmailAndPassword, signInWithPopup, GoogleAuthProvider } from "firebase/auth"
 import { auth, db } from '../app/firebase'
-import { doc, setDoc } from "firebase/firestore"
+import { doc, setDoc, getDoc } from "firebase/firestore"
 
 const Login = () => {
 
@@ -49,22 +49,29 @@ const Login = () => {
 
   const logInWithGoogle = () => {
     signInWithPopup(auth, provider)
-    .then((result) => {
+    .then(async (result) => {
       const user = result.user;
 
-      setDoc(doc(db, 'users', user.uid), {
-        uid: user.uid,
-        email: user.email,
-        description: '',
-        homepage: '',
-        followersId: [],
-        followingId: [],
-        likedPosts: [],
-        posts: [],
-        userDisplayName: user.displayName,
-        userImage: user.photoURL,
-      });
+      //check if user exists, if not - add to db
+      const docRef = doc(db, 'users', user?.uid);
+      const docSnap = await getDoc(docRef);
 
+      if (docSnap.exists()) {
+        navigate('/');
+      } else {
+        setDoc(doc(db, 'users', user.uid), {
+          uid: user.uid,
+          email: user.email,
+          description: '',
+          homepage: '',
+          followersId: [],
+          followingId: [],
+          likedPosts: [],
+          posts: [],
+          userDisplayName: user.displayName,
+          userImage: user.photoURL,
+        });
+      }
     })
     .catch((error) => {
       const errorMessage = error.message;

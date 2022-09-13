@@ -12,7 +12,7 @@ const Images = () => {
     const [posts, setPosts] = useState([]);
 
     useEffect(() => {
-        const unsubscribe = onSnapshot(query(collection(db, 'posts'), orderBy('timestamp', 'desc')), snapshot => {
+        const unsubscribe = onSnapshot(query(collection(db, 'posts'), orderBy('timestamp', 'desc')), (snapshot) => {
             setPosts(snapshot.docs);
         });
 

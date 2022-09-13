@@ -6,9 +6,6 @@ import {Helmet} from "react-helmet"
 //components
 import Footer from '../components/Footer'
 
-//icons 
-import { Google } from '@styled-icons/boxicons-logos/Google'
-
 //firebase
 import { auth, db } from '../app/firebase'
 import { createUserWithEmailAndPassword, updateProfile } from 'firebase/auth'

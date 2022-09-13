@@ -98,8 +98,6 @@ const Profile = () => {
     //eslint-disabled-next-line
   }, [userData])
 
-  console.log(followed)
-
   return (
     <div className='profile'>
       <Helmet><title>{`Instagram - ${userData?.userDisplayName}`}</title></Helmet>

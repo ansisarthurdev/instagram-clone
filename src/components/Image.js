@@ -4,12 +4,12 @@ import styled from 'styled-components'
 import { Link } from 'react-router-dom'
 
 //icons
-import { HeartOutline } from '@styled-icons/evaicons-outline/HeartOutline'
 import { Comment } from '@styled-icons/boxicons-regular/Comment'
 import { Send } from '@styled-icons/feather/Send'
 import { MoreHorizontalOutline } from '@styled-icons/evaicons-outline/MoreHorizontalOutline'
 
 const Image = ({ id, image, userId, userImage, userName, postAdded, likes}) => {
+
   return (
     <Wrapper>
         <Link to={`./posts/${id}`}>
@@ -28,7 +28,7 @@ const Image = ({ id, image, userId, userImage, userName, postAdded, likes}) => {
                 </div>
             </div>
             <div className='right'>
-                <p>{likes} likes</p> <HeartOutline className='icon' /> <Comment className='icon' /> <Send className='icon' /> <MoreHorizontalOutline className='icon' />
+                <p>{likes} likes</p> <Comment className='icon' /> <Send className='icon' /> <MoreHorizontalOutline className='icon' />
             </div>
         </InstaInfo>
     </Wrapper>
