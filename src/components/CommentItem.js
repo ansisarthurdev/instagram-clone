@@ -1,5 +1,6 @@
 import React from 'react'
 import styled from 'styled-components'
+import { Link } from 'react-router-dom'
 
 import { HeartOutline } from '@styled-icons/evaicons-outline/HeartOutline'
 
@@ -9,7 +10,11 @@ const Comment = ({id, name, comment, avatar}) => {
       <div style={{display: 'flex', paddingRight: 5, alignItems: 'center'}}>
         <HeartOutline className='icon'/>
         <Avatar className='comment-avatar' src={avatar}/>
-        <p className='comment-name'>{name}</p>
+
+        <Link to={`../profile/${id}`}>
+          <p className='comment-name'>{name}</p>
+        </Link>
+
       </div>
       <div>
         <p className='comment-content'>{comment}</p>
@@ -30,6 +35,16 @@ display: flex;
 align-items: center;
 width: 100%;
 margin-bottom: 10px;
+
+a {
+  text-decoration: none;
+  color: black;
+  transition: .2s ease-out;
+
+  :hover {
+    opacity: .5;
+  }
+}
 
 p {
   font-size: .7rem;

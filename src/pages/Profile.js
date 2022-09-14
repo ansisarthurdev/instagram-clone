@@ -1,43 +1,120 @@
-import React, { useEffect, useState } from 'react'
+import React, { useEffect, useState, useRef } from 'react'
 import styled from 'styled-components'
 import { Link, useNavigate } from 'react-router-dom'
 import {Helmet} from "react-helmet"
+import Modal from '@mui/material/Modal'
+import Box from '@mui/material/Box'
 
 //components
 import Navbar from '../components/Navbar'
 import Footer from '../components/Footer'
-import StoryProfile from '../components/StoryProfile'
+//import StoryProfile from '../components/StoryProfile'
 
 //icons
 import { ArrowIosBack } from '@styled-icons/evaicons-solid/ArrowIosBack'
 import { LogOut } from '@styled-icons/boxicons-regular/LogOut'
+import { CloseOutline } from '@styled-icons/evaicons-outline/CloseOutline'
+import { Camera } from '@styled-icons/bootstrap/Camera'
 
 //firebase
 import { useSelector } from 'react-redux'
 import { selectUser } from '../app/appSlice'
 import { signOut } from "firebase/auth"
-import { auth, db } from '../app/firebase'
-import { doc, getDoc } from "firebase/firestore";
+import { auth, db, storage } from '../app/firebase'
+import { doc, updateDoc, onSnapshot } from "firebase/firestore";
+import { ref, getDownloadURL, uploadString } from '@firebase/storage'
 
 const Profile = () => {
+
+  const style = {
+    position: 'absolute',
+    top: '50%',
+    left: '50%',
+    transform: 'translate(-50%, -50%)',
+    maxWidth: 400,
+    width: '100%',
+    bgcolor: 'background.paper',
+    border: '1px solid black',
+    borderRadius: 2,
+    boxShadow: 24,
+    p: 2,
+  };
 
   const user = useSelector(selectUser);
   const navigate = useNavigate();
   const [userData, setUserData] = useState(null);
+  const [openModal, setOpenModal] = useState(false);
+
+  const [username, setUsername] = useState('');
+  const [description, setDescription] = useState('');
+  const [link, setLink] = useState('');
+  const [loading, setLoading] = useState(false);
+
+  const filePickerRef = useRef(null);
+  const [selectedFile, setSelectedFile] = useState(null);
+
+  //following&followed modal
+  const [openFModal, setOpenFModal] = useState(false);
+  const [fModalType, setFModalType] = useState();
 
   const logOut = () => {
     signOut(auth);
     navigate('/login');
   }
 
-  const getUserDataFromDb = async () => {
-    const docRef = doc(db, "users", user?.uid);
-    const docSnap = await getDoc(docRef);
+  const changeImage = (e) => {
+    const reader = new FileReader();
+    if(e.target.files[0]){
+      reader.readAsDataURL(e.target.files[0])
+    }
 
-    if (docSnap.exists()) {
-      setUserData(docSnap.data());
+    reader.onload = (readerEvent) => {
+      setSelectedFile(readerEvent.target.result)
     }
   }
+
+  const updateProfile = async () => {
+    if(loading) return;
+
+    setLoading(true);
+
+    const docRef = doc(db, 'users', user?.uid);
+    const imageRef = ref(storage, `posts/${user?.uid}/image`);
+
+    await uploadString(imageRef, selectedFile, 'data_url').then(async snapshot => {
+      const downloadURL = await getDownloadURL(imageRef);
+      
+      await updateDoc(docRef, {
+        userDisplayName: username,
+        description: description,
+        homepage: link,
+        userImage: downloadURL
+      });
+
+    })
+
+    setOpenModal(false);
+    setLoading(false);
+    setSelectedFile(null);
+  }
+
+  const showInfo = (type) => {
+    if(type === 'following' && userData?.followingId?.length > 0){
+      setFModalType('following');
+      setOpenFModal(true);
+
+    } else if(type === 'followers' && userData?.followersId?.length > 0) {
+      setFModalType('followers');
+      setOpenFModal(true);
+    }
+  }
+
+
+
+
+
+
+  //useEffects..........
   
   useEffect(() => {
     if(user === null){
@@ -47,10 +124,15 @@ const Profile = () => {
   }, [user])
 
   useEffect(() => {
-    getUserDataFromDb();
-
-  //eslint-disable-next-line
-  }, [])
+    if(user !== 'loading'){
+      const unsub = onSnapshot(doc(db, 'users', user?.uid), (doc) => {
+        setUserData(doc?.data());
+      });
+  
+      return unsub;
+    }
+    //eslint-disable-next-line
+  }, [db, user])
 
   return (
     <div className='profile'>
@@ -72,11 +154,11 @@ const Profile = () => {
                       <h3>{userData?.posts?.length}</h3>
                       <p>posts</p>
                     </div>
-                    <div className='stat'>
+                    <div className='stat' onClick={() => showInfo('followers')}>
                       <h3>{userData?.followersId?.length}</h3>
                       <p>followers</p>
                     </div>
-                    <div className='stat'>
+                    <div className='stat' onClick={() => showInfo('following')}>
                       <h3>{userData?.followingId?.length}</h3>
                       <p>following</p>
                     </div>
@@ -133,6 +215,7 @@ const Profile = () => {
                       seen='false'
                     />
                   </div>*/}
+                  <div className='update-btn btn' onClick={() => setOpenModal(true)}>Update Profile</div>
                 </div>
 
               </div>
@@ -146,9 +229,121 @@ const Profile = () => {
             </div>
           </Wrapper>
         <Footer />
+
+        {/* Upload modal */}
+        <Modal
+          open={openModal}
+          onClose={() => setOpenModal(false)}
+        >
+          <Box sx={style}>
+            <CloseOutline onClick={() => setOpenModal(false)} className='closeIcon' style={{width: 20, height: 20, position: 'absolute', right: 20, zIndex: 100, cursor: 'pointer'}} />
+
+            <p style={{textAlign: 'center'}}>Update Profile</p>
+                
+            <div className='change-avatar' style={{position: 'relative'}}>
+              <ChangeAvatar src={selectedFile ? selectedFile : userData?.userImage} onClick={() => filePickerRef.current.click()} />
+              <Camera className='icon' style={{position: 'absolute', width: 30, height: 30, top: 25, color: 'white', left: '50%', transform: 'translateX(-50%)', pointerEvents: 'none'}}/>
+              <input type='file' ref={filePickerRef} onChange={changeImage} hidden/>
+            </div>
+
+            <p style={{marginTop: 20}}>Username</p>
+            <div className='user-name' style={{width: '100%'}}>
+              <input type='text' name={username} onChange={e => setUsername(e.target.value)} placeholder={userData?.userDisplayName} style={{width: '100%', outline: 'none', border: 'none', margin: '10px 0 10px'}} />
+            </div>
+
+            <p style={{marginTop: 20}}>Description</p>
+            <div className='user-description' style={{width: '100%'}}>
+              <input type='text' name={description} onChange={e => setDescription(e.target.value)} placeholder={userData?.description ? userData?.description : 'Type your profile description...'} style={{width: '100%', outline: 'none', border: 'none', margin: '10px 0 10px'}} />
+            </div>
+
+            <p style={{marginTop: 20}}>Home page link</p>
+            <div className='user-description' style={{width: '100%'}}>
+              <input type='text' name={link} onChange={e => setLink(e.target.value)} placeholder={userData?.homepage ? userData?.homepage : 'Type your home page link...'} style={{width: '100%', outline: 'none', border: 'none', margin: '10px 0 10px'}} />
+            </div>
+            
+            <button className='update-profile' onClick={updateProfile} disabled={loading}  style={{background: loading ? '#707070' : '#218CEE', width: '50%', margin: '20px auto 0', textAlign: 'center', color: 'white', padding: 10, fontSize: '0.8rem', borderRadius: 5, cursor: 'pointer', border: 'none', display: 'flex', justifyContent: 'center'}}>
+              {loading ? 'Uploading...' : 'Update'}
+            </button>
+          </Box>
+        </Modal>
+
+        {/* Following/Followers modal */}
+        <Modal
+          open={openFModal}
+          onClose={() => setOpenFModal(false)}
+        >
+          <Box sx={style}>
+            <CloseOutline onClick={() => setOpenFModal(false)} className='closeIcon' style={{width: 20, height: 20, position: 'absolute', right: 20, zIndex: 100, cursor: 'pointer'}} />
+
+            <FollowFollowingModal>
+              <p className='header'>Followers</p>
+              <div className='content-wrapper'>
+                  {fModalType === 'followers' &&
+                    userData?.followersId?.map(user => (
+                      <Link to={`../profile/${user?.id}`} key={user?.id}><div className='user'>
+                          <img src={user?.userImage} alt=''/>
+                          <p>{user?.userDisplayName}</p>
+                      </div></Link>
+                    ))
+                  }
+
+                  {fModalType === 'following' &&
+                      userData?.followingId?.map(user => (
+                        <div className='user'>
+                          <Link to={`../profile/${user?.id}`} key={user?.id}><div className='user'>
+                              <img src={user?.userImage} alt=''/>
+                              <p>{user?.userDisplayName}</p>
+                          </div></Link>
+                      </div>
+                    ))
+                  }
+              </div>
+            </FollowFollowingModal>
+            
+          </Box>
+        </Modal>
     </div>
   )
 }
+
+const FollowFollowingModal = styled.div`
+  .user {
+    display: flex;
+    align-items: center;
+    padding: 5px;
+    cursor: pointer;
+    transition: .2s ease-out;
+
+    a {
+      text-decoration: none;
+      color: black;
+      padding: 0;
+    }
+
+    :hover {
+      background: lightgray;
+    }
+
+    img {
+      margin-right: 10px;
+      width: 30px;
+      height: 30px;
+      border-radius: 50%;
+    }
+  }
+
+  .header {
+    text-align: center;
+    margin: 0 0 30px 0;
+  }
+
+  .content-wrapper {
+    height: 300px;
+    overflow: scroll;
+    overflow-x: hidden;
+
+  }
+`
 
 const Wrapper = styled.div`
 max-width: 1200px;
@@ -216,6 +411,13 @@ display: flex;
         
         .stat {
           text-align: center;
+          cursor: pointer;
+
+          :hover {
+            p {
+              color: black;
+            }
+          }
           
           h3 {
             font-size: .9rem;
@@ -226,6 +428,28 @@ display: flex;
             color: gray;
           }
         }
+      }
+
+      .btn {
+          width: 100%;
+          padding: 8px 5px;
+          font-size: .7rem;
+          color: black;
+          border-radius: 5px;
+          transition: .4s cubic-bezier(0.075, 0.82, 0.165, 1);
+          cursor: pointer;
+          display: flex;
+          justify-content: center;
+          align-items: center;
+          margin-bottom: 40px;  
+
+          :hover {
+            opacity: .8;
+          }
+        }
+
+      .update-btn {
+        background: lightgray;
       }
 
       .profile-action {
@@ -352,6 +576,21 @@ transition: .2s ease-out;
   margin-left: 0;
   position: relative;
   right: 15px;
+}
+`
+
+const ChangeAvatar = styled.img`
+border-radius: 50%;
+margin: 30px auto;
+display: flex;
+justify-self: center;
+width: 80px;
+height: 80px;
+transition: .2s ease-out;
+cursor: pointer;
+
+:hover {
+  transform: scale(1.2);
 }
 `
 

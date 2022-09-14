@@ -126,7 +126,8 @@ const Post = () => {
               <div className='post-comments'>
               {comments?.map(comment => (
                 <CommentItem 
-                  key={comment?.id}
+                  key={comment?.data().userId}
+                  id={comment?.data().userId}
                   name={comment?.data().username}
                   comment={comment?.data().comment}
                   avatar={comment?.data().userImage}

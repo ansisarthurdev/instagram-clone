@@ -2,6 +2,8 @@ import React, { useEffect, useState } from 'react'
 import styled from 'styled-components'
 import { Link, useNavigate, useParams } from 'react-router-dom'
 import {Helmet} from "react-helmet"
+import Modal from '@mui/material/Modal'
+import Box from '@mui/material/Box'
 
 //components
 import Navbar from '../components/Navbar'
@@ -11,6 +13,7 @@ import Footer from '../components/Footer'
 //icons
 import { ArrowIosBack } from '@styled-icons/evaicons-solid/ArrowIosBack'
 import { LogOut } from '@styled-icons/boxicons-regular/LogOut'
+import { CloseOutline } from '@styled-icons/evaicons-outline/CloseOutline'
 
 //firebase
 import { useSelector } from 'react-redux'
@@ -21,11 +24,29 @@ import { doc, getDoc, updateDoc, arrayUnion, onSnapshot } from "firebase/firesto
 
 const Profile = () => {
 
+  const style = {
+    position: 'absolute',
+    top: '50%',
+    left: '50%',
+    transform: 'translate(-50%, -50%)',
+    maxWidth: 400,
+    width: '100%',
+    bgcolor: 'background.paper',
+    border: '1px solid black',
+    borderRadius: 2,
+    boxShadow: 24,
+    p: 2,
+  };
+
   const user = useSelector(selectUser);
   const navigate = useNavigate();
   const params = useParams();
   const [userData, setUserData] = useState(null);
   const [followed, isFollowing] = useState();
+
+  //following&followed modal
+  const [openFModal, setOpenFModal] = useState(false);
+  const [fModalType, setFModalType] = useState();
 
   const logOut = () => {
     signOut(auth);
@@ -74,7 +95,19 @@ const Profile = () => {
       followersId: followingUserSnap.data()?.followersId?.filter(following => following?.id !== user?.uid)
     });
   }
-   
+
+  const showInfo = (type) => {
+    if(type === 'following' && userData?.followingId?.length > 0){
+      setFModalType('following');
+      setOpenFModal(true);
+
+    } else if(type === 'followers' && userData?.followersId?.length > 0) {
+      setFModalType('followers');
+      setOpenFModal(true);
+    }
+  }
+  
+
   useEffect(() => {
     //return if user not logged in
     if(user === null){
@@ -118,11 +151,11 @@ const Profile = () => {
                       <h3>{userData?.posts?.length}</h3>
                       <p>posts</p>
                     </div>
-                    <div className='stat'>
+                    <div className='stat' onClick={() => showInfo('followers')}>
                       <h3>{userData?.followersId?.length}</h3>
                       <p>followers</p>
                     </div>
-                    <div className='stat'>
+                    <div className='stat' onClick={() => showInfo('following')}>
                       <h3>{userData?.followingId?.length}</h3>
                       <p>following</p>
                     </div>
@@ -134,7 +167,7 @@ const Profile = () => {
 
                   <h3 className='profile-name'>{userData?.userDisplayName}</h3>
                   <p className='profile-desc'>{userData?.description}</p>
-                  <p className='profile-web'>{userData?.homepage}</p>
+                  <p className='profile-web'><a href={`${userData?.homepage}`}>{userData?.homepage}</a></p>
 
                   {/*<div className='stories'>
                     <StoryProfile 
@@ -192,9 +225,88 @@ const Profile = () => {
             </div>
           </Wrapper>
         <Footer />
+
+        {/* Following/Followers modal */}
+        <Modal
+        open={openFModal}
+        onClose={() => setOpenFModal(false)}
+        >
+          <Box sx={style}>
+            <CloseOutline onClick={() => setOpenFModal(false)} className='closeIcon' style={{width: 20, height: 20, position: 'absolute', right: 20, zIndex: 100, cursor: 'pointer'}} />
+
+            <FollowFollowingModal>
+              <p className='header'>Followers</p>
+              <div className='content-wrapper'>
+                  {fModalType === 'followers' &&
+                    userData?.followersId?.map(user => (
+                      <Link to={`../profile/${user?.id}`} key={user?.id}><div className='user'>
+                          <img src={user?.userImage} alt=''/>
+                          <p>{user?.userDisplayName}</p>
+                      </div></Link>
+                    ))
+                  }
+
+                  {fModalType === 'following' &&
+                      userData?.followingId?.map(user => (
+                        <div className='user'>
+                          <Link to={`../profile/${user?.id}`} key={user?.id}><div className='user'>
+                              <img src={user?.userImage} alt=''/>
+                              <p>{user?.userDisplayName}</p>
+                          </div></Link>
+                      </div>
+                    ))
+                  }
+              </div>
+            </FollowFollowingModal>
+            
+          </Box>
+        </Modal>
     </div>
   )
 }
+
+const FollowFollowingModal = styled.div`
+  .user {
+    display: flex;
+    align-items: center;
+    padding: 5px;
+    cursor: pointer;
+    transition: .2s ease-out;
+
+    a {
+      text-decoration: none;
+      color: black;
+      padding: 0;
+    }
+
+    :hover {
+      background: lightgray;
+    }
+
+    img {
+      margin-right: 10px;
+      width: 30px;
+      height: 30px;
+      border-radius: 50%;
+    }
+  }
+
+  .header {
+    text-align: center;
+    margin: 0 0 30px 0;
+  }
+
+  .content-wrapper {
+    height: 300px;
+    overflow: scroll;
+    overflow-x: hidden;
+
+   a {
+    color: black;
+    text-decoration: none;
+   }
+  }
+`
 
 const Wrapper = styled.div`
 max-width: 1200px;
@@ -262,6 +374,13 @@ display: flex;
         
         .stat {
           text-align: center;
+          cursor: pointer;
+
+          :hover {
+            p {
+              color: black;
+            }
+          }
           
           h3 {
             font-size: .9rem;
@@ -326,6 +445,10 @@ display: flex;
         font-size: .8rem;
         color: #218CEE;
         margin-bottom: 30px;
+
+        a {
+          text-decoration: none;
+        }
       }
 
       .stories {

@@ -30,6 +30,7 @@ const AddComment = ({id}) => {
             await addDoc(collection(db, 'posts', id, 'comments'), {
                 comment: commentToSend,
                 username: user.displayName ? user.displayName : user.email,
+                userId: user.uid,
                 userImage: user?.photoURL ? user.photoURL : '../images/userImg.png',
                 timestamp: serverTimestamp()
             })
