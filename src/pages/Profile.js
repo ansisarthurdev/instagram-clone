@@ -19,7 +19,7 @@ import { Camera } from '@styled-icons/bootstrap/Camera'
 //firebase
 import { useSelector } from 'react-redux'
 import { selectUser } from '../app/appSlice'
-import { signOut } from "firebase/auth"
+import { signOut, updateProfile } from "firebase/auth"
 import { auth, db, storage } from '../app/firebase'
 import { doc, updateDoc, onSnapshot } from "firebase/firestore";
 import { ref, getDownloadURL, uploadString } from '@firebase/storage'
@@ -73,13 +73,13 @@ const Profile = () => {
     }
   }
 
-  const updateProfile = async () => {
+  const updateProfileHook = async () => {
     if(loading) return;
 
     setLoading(true);
 
     const docRef = doc(db, 'users', user?.uid);
-    const imageRef = ref(storage, `posts/${user?.uid}/image`);
+    const imageRef = ref(storage, `userImages/${user?.uid}/image`);
 
     await uploadString(imageRef, selectedFile, 'data_url').then(async snapshot => {
       const downloadURL = await getDownloadURL(imageRef);
@@ -90,6 +90,11 @@ const Profile = () => {
         homepage: link,
         userImage: downloadURL
       });
+
+      updateProfile(auth.currentUser, {
+        displayName: username, 
+        photoURL: downloadURL
+      })
 
     })
 
@@ -108,10 +113,6 @@ const Profile = () => {
       setOpenFModal(true);
     }
   }
-
-
-
-
 
 
   //useEffects..........
@@ -261,7 +262,7 @@ const Profile = () => {
               <input type='text' name={link} onChange={e => setLink(e.target.value)} placeholder={userData?.homepage ? userData?.homepage : 'Type your home page link...'} style={{width: '100%', outline: 'none', border: 'none', margin: '10px 0 10px'}} />
             </div>
             
-            <button className='update-profile' onClick={updateProfile} disabled={loading}  style={{background: loading ? '#707070' : '#218CEE', width: '50%', margin: '20px auto 0', textAlign: 'center', color: 'white', padding: 10, fontSize: '0.8rem', borderRadius: 5, cursor: 'pointer', border: 'none', display: 'flex', justifyContent: 'center'}}>
+            <button className='update-profile' onClick={updateProfileHook} disabled={loading}  style={{background: loading ? '#707070' : '#218CEE', width: '50%', margin: '20px auto 0', textAlign: 'center', color: 'white', padding: 10, fontSize: '0.8rem', borderRadius: 5, cursor: 'pointer', border: 'none', display: 'flex', justifyContent: 'center'}}>
               {loading ? 'Uploading...' : 'Update'}
             </button>
           </Box>
