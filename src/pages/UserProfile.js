@@ -516,6 +516,7 @@ height: 60px;
 border-radius: 50%;
 margin-left: 20%;
 transition: .2s ease-out;
+object-fit: cover;
 
 :hover {
   transform: scale(1.2)

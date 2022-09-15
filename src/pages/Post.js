@@ -282,6 +282,7 @@ width: 32px;
 height: 32px;
 border-radius: 50%;
 margin-right: 10px;
+object-fit: cover;
 `
 
 export default Post

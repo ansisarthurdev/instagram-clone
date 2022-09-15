@@ -161,6 +161,7 @@ const Avatar = styled.img`
 width: 24px;
 height: 24px;
 border-radius: 50%;
+object-fit: cover;
 `
 
 const Wrapper = styled.div``

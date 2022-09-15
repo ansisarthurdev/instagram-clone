@@ -49,6 +49,7 @@ const Profile = () => {
   const [description, setDescription] = useState('');
   const [link, setLink] = useState('');
   const [loading, setLoading] = useState(false);
+  const [alert, setAlert] = useState('');
 
   const filePickerRef = useRef(null);
   const [selectedFile, setSelectedFile] = useState(null);
@@ -76,31 +77,37 @@ const Profile = () => {
   const updateProfileHook = async () => {
     if(loading) return;
 
-    setLoading(true);
+    if(username !== '' && description !== '' && link !== '' && selectedFile !== null){
+      setLoading(true);
+      setAlert('');
 
-    const docRef = doc(db, 'users', user?.uid);
-    const imageRef = ref(storage, `userImages/${user?.uid}/image`);
-
-    await uploadString(imageRef, selectedFile, 'data_url').then(async snapshot => {
-      const downloadURL = await getDownloadURL(imageRef);
-      
-      await updateDoc(docRef, {
-        userDisplayName: username,
-        description: description,
-        homepage: link,
-        userImage: downloadURL
-      });
-
-      updateProfile(auth.currentUser, {
-        displayName: username, 
-        photoURL: downloadURL
+      const docRef = doc(db, 'users', user?.uid);
+      const imageRef = ref(storage, `userImages/${user?.uid}/image`);
+  
+      await uploadString(imageRef, selectedFile, 'data_url').then(async snapshot => {
+        const downloadURL = await getDownloadURL(imageRef);
+        
+        await updateDoc(docRef, {
+          userDisplayName: username,
+          description: description,
+          homepage: link,
+          userImage: downloadURL
+        });
+  
+        updateProfile(auth.currentUser, {
+          displayName: username, 
+          photoURL: downloadURL
+        })
+  
       })
+  
+      setOpenModal(false);
+      setLoading(false);
+      setSelectedFile(null);
+    } else {
+      setAlert('One of fields are not filled and/or profile image!')
+    }
 
-    })
-
-    setOpenModal(false);
-    setLoading(false);
-    setSelectedFile(null);
   }
 
   const showInfo = (type) => {
@@ -247,6 +254,8 @@ const Profile = () => {
               <input type='file' ref={filePickerRef} onChange={changeImage} hidden/>
             </div>
 
+            {alert && <AlertBar>{alert}</AlertBar>}
+
             <p style={{marginTop: 20}}>Username</p>
             <div className='user-name' style={{width: '100%'}}>
               <input type='text' name={username} onChange={e => setUsername(e.target.value)} placeholder={userData?.userDisplayName} style={{width: '100%', outline: 'none', border: 'none', margin: '10px 0 10px'}} />
@@ -277,14 +286,18 @@ const Profile = () => {
             <CloseOutline onClick={() => setOpenFModal(false)} className='closeIcon' style={{width: 20, height: 20, position: 'absolute', right: 20, zIndex: 100, cursor: 'pointer'}} />
 
             <FollowFollowingModal>
-              <p className='header'>Followers</p>
+              {fModalType === 'followers' && <p className='header'>Followers</p>}
+              {fModalType === 'following' && <p className='header'>Following</p>}
+              
               <div className='content-wrapper'>
                   {fModalType === 'followers' &&
                     userData?.followersId?.map(user => (
+                      <div className='user'>
                       <Link to={`../profile/${user?.id}`} key={user?.id}><div className='user'>
                           <img src={user?.userImage} alt=''/>
                           <p>{user?.userDisplayName}</p>
                       </div></Link>
+                      </div>
                     ))
                   }
 
@@ -306,6 +319,15 @@ const Profile = () => {
     </div>
   )
 }
+
+const AlertBar = styled.div`
+font-size: .8rem;
+text-align: center;
+background: #DC3545;
+padding: 10px;
+border-radius: 5px;
+color: white;
+`
 
 const FollowFollowingModal = styled.div`
   .user {
@@ -330,6 +352,7 @@ const FollowFollowingModal = styled.div`
       width: 30px;
       height: 30px;
       border-radius: 50%;
+      object-fit: cover;
     }
   }
 
@@ -568,6 +591,7 @@ height: 60px;
 border-radius: 50%;
 margin-left: 20%;
 transition: .2s ease-out;
+object-fit: cover;
 
 :hover {
   transform: scale(1.2)
