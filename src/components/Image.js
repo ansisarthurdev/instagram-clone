@@ -28,7 +28,7 @@ const Image = ({ id, image, userId, userImage, userName, postAdded, likes}) => {
                 </div>
             </div>
             <div className='right'>
-                <p>{likes} likes</p> <Comment className='icon' /> <Send className='icon' /> <MoreHorizontalOutline className='icon' />
+                <p>{likes} likes</p> <Link to={`./posts/${id}`}><Comment className='icon' /> </Link><Send className='icon' /> <MoreHorizontalOutline className='icon' />
             </div>
         </InstaInfo>
     </Wrapper>

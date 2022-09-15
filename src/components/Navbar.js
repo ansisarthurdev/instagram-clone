@@ -65,7 +65,7 @@ const Navbar = () => {
 
             <Icon 
                 Icon={HeartOutline}
-                link='/'
+                link='/likes'
                 name='Likes'
             />
         </div>
@@ -94,7 +94,7 @@ const Navbar = () => {
                 <Link to='/' onClick={() => setOpen(false)}><HomeOutline className='icon'/><p>Home</p></Link>
                 <Link to='/discover' onClick={() => setOpen(false)}><SearchAlt className='icon'/><p>Discover</p></Link>
                 <Link to='/' onClick={() => setOpen(false)}><Tv className='icon'/><p>IGTV</p></Link>
-                <Link to='/' onClick={() => setOpen(false)}><HeartOutline className='icon'/><p>Notifications</p></Link>
+                <Link to='/likes' onClick={() => setOpen(false)}><HeartOutline className='icon'/><p>Notifications</p></Link>
             </div>
             </MobileNav>
         </>}

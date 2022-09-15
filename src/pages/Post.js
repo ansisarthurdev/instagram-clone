@@ -86,7 +86,7 @@ const Post = () => {
   
   return (
     <div className='post'>
-      <Helmet><title>Instagram - Post</title></Helmet>
+      <Helmet><title>{`Instagram - ${postData?.caption}`}</title></Helmet>
         <Navbar />
           <Wrapper>
             <PostTop>

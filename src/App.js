@@ -9,6 +9,7 @@ import Login from './pages/Login'
 import SignUp from './pages/SignUp'
 import Discover from './pages/Discover'
 import Post from './pages/Post'
+import Likes from './pages/Likes'
 
 //firebase
 import { onAuthStateChanged } from "firebase/auth"
@@ -45,6 +46,7 @@ const App = () => {
       <Route path="/signup" element={<SignUp />} />
       <Route path="/discover" element={<Discover />} />
       <Route path="/posts/:id" element={<Post />} />
+      <Route path="/likes" element={<Likes />} />
     </Routes>
   )
 }
